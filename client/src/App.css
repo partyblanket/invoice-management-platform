@@ -1,0 +1,107 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 10px;
+}
+
+body {
+  background: #96AECB;
+}
+
+header {
+  height: 6rem;
+  background: #B3426E;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+}
+
+.main {
+  position: relative;
+  top: 50px;
+}
+
+.pdf {
+  background: #FAFBF2;
+  /* margin: 0 auto; */
+  width: 84.1rem;
+  height: 118.9rem;
+  position: absolute; 
+  left: 0; 
+  right: 0; 
+  margin-left: auto; 
+  margin-right: auto; 
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  display: flex;
+}
+
+.pdf_body {
+  width: 69rem;
+  height: 104rem;
+  border: dotted 0.05rem black;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  
+}
+
+.pdf_content {
+  width: 100%;
+  min-height: 10rem;
+  border: dotted 0.05rem pink;
+  position: relative;
+}
+
+.pdf_item {
+  position: absolute;
+  min-height: 5rem;
+  height: auto;
+  min-width: 10rem;
+  width: auto;
+}
+
+
+
+.pdf_item.date {
+  top: 0rem;
+  right: 0rem;
+  font-size: 2rem;
+}
+
+.pdf_item.company {
+  top: 0rem;
+  left: 0rem;
+
+  font-size: 3rem;
+}
+
+#address p{
+  font-size: 1.5rem;
+}
+
+.pdf_content.items {
+  display: grid;
+  grid-template-columns: 4fr 1fr 1fr 1fr;
+  
+}
+
+.line_item {
+  font-size: 1.5rem;
+}
+
+.line_description {
+
+}
+
+.line_amount {
+  
+}
+
+.line_value {
+  
+}
+
+.line_total {
+  
+}

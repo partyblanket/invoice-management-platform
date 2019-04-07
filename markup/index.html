@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <meta http-equiv='X-UA-Compatible' content='ie=edge'>
   <title>Invoice builder</title>
-  <link rel="stylesheet" href="style.css"></head>
+  <link rel='stylesheet' href='style.css'></head>
 <body>
   <header></header>
   <div class='main'>
-    <div class='pdf'>
+    <div class='pdf' id='pdf'>
       <div class='pdf_body'>
         <div class='pdf_content' id='pdf_head'>
           <div class='pdf_item' id='date'>
@@ -55,7 +55,8 @@
         <div class='pdf_content' id='pdf_foot'></div>
       </div>
     </div>
+    <button onclick='getPDF()'>download</button>
   </div>
-  
+  <script src='script.js'></script>
 </body>
 </html>
