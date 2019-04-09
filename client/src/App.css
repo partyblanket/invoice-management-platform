@@ -76,7 +76,7 @@ header {
   font-size: 3rem;
 }
 
-#address p{
+.address p{
   font-size: 1.5rem;
 }
 
@@ -104,4 +104,19 @@ header {
 
 .line_total {
   
+}
+
+/* content editable */
+[contenteditable="true"].single-line {
+  white-space: nowrap;
+  width:200px;
+  overflow: hidden;
+} 
+[contenteditable="true"].single-line br {
+  display:none;
+
+}
+[contenteditable="true"].single-line * {
+  display:inline;
+  white-space:nowrap;
 }

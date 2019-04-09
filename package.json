@@ -16,7 +16,8 @@
     "express": "^4.16.4",
     "nodemon": "^1.18.10",
     "path": "^0.12.7",
-    "puppeteer": "^1.14.0"
+    "puppeteer": "^1.14.0",
+    "react-contenteditable": "^3.2.6"
   },
   "devDependencies": {
     "concurrently": "^4.1.0"

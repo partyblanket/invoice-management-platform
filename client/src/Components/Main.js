@@ -1,8 +1,17 @@
 import React, {useState} from 'react'
 import Invoice from './Invoice';
 import Pdf from './Pdf';
+import INVOICE_DEFAULTS from '../defaults'
 
 function Main() {
+
+  const [invDets, setInvDets] = useState(INVOICE_DEFAULTS)
+  const [pdf, setPdf] = useState(null)
+  const [view, changeView] = useState(true);
+
+  function editField (e) {
+    
+  }
 
   function getPDF (){
     fetch(`/download/44`)
@@ -19,8 +28,7 @@ function Main() {
     });
   }
 
-  const [pdf, setPdf] = useState(null)
-  let [view, changeView] = useState(true);
+
 
   function changeToPDF () {
     changeView(!view)
@@ -44,7 +52,7 @@ function Main() {
 
   return (
     <div className='main'>
-        {view ? <Invoice /> : <Pdf doc={pdf}/>}
+        {view ? <Invoice details={invDets}/> : <Pdf doc={pdf}/>}
         <button onClick={createPDF}>download</button>
         <button onClick={changeToPDF}>Change view</button>
     </div>
