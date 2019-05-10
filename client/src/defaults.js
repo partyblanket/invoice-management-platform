@@ -1,13 +1,34 @@
 const INVOICE_DEFAULTS = {
   from: {
-    name: 'Company Name',
-    address: [
-      'Slotenmakerstraat 33',
-      '1901 SB Castricum',
-      'The Netherlands',
-    ]
+    name: {
+      c: 'Company Name',
+      style: {
+        width: '200px'
+      },
   },
-  to: {},
+    address: {
+      c: [
+        'Slotenmakerstraat 33',
+        '1901 SB Castricum',
+        'The Netherlands',
+      ],
+      style: {width: '300px'}
+    } 
+  },
+  to: {
+    name: {
+      c: 'Other Company Name',
+      style: {width: '300px'},
+    },
+    address: {
+      c: [
+        'Plitdorferokatz 33',
+        '1901 SB Ramstein',
+        'Germany',
+      ],
+      style: {width: '300px'},
+    }
+  },
   lines: [
     {
       item: 'an item',
@@ -40,9 +61,24 @@ const INVOICE_DEFAULTS = {
       value: 5.54,
     },
   ],
-  date: '12 April 2019',
+  title: {
+    c: 'Invoice',
+    style:{width: '150px'},
+  },
+  InvoiceNumber: {
+    c: 10567,
+    style: {},
+  },
+  dateOfIssue: {
+    c: '12 April 2019',
+    style: {width: '150px'},
+  },
   locale: '',
   currency: 'EUR',
+  note: {
+    c: 'Thank you',
+    style:  {}
+  }
 }
 
 export default INVOICE_DEFAULTS

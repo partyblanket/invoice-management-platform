@@ -9,12 +9,12 @@ body {
   background: #96AECB;
 }
 
-header {
+/* header {
   height: 6rem;
   background: #B3426E;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 
-}
+} */
 
 .main {
   position: relative;
@@ -43,6 +43,7 @@ header {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  font-family: Corbel;
   
 }
 
@@ -51,21 +52,22 @@ header {
   min-height: 10rem;
   border: dotted 0.05rem pink;
   position: relative;
+  display: inline-block;
 }
 
 .pdf_item {
-  position: absolute;
   min-height: 5rem;
   height: auto;
   min-width: 10rem;
-  width: auto;
+  border: 1px dotted orange;
 }
 
 
 
 .pdf_item.date {
-  top: 0rem;
-  right: 0rem;
+  /* top: 0rem;
+  right: 0rem; */
+  float: right;
   font-size: 2rem;
 }
 

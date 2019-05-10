@@ -61,11 +61,14 @@ class InvoiceItem extends Component {
     }, 0)
   }
 
+  style
+
   render = () => {
     return <ContentEditable
+              style={this.props.dets.style}
               className = {this.props.className}
               innerRef={this.contentEditable}
-              html={this.state.val} // innerHTML of the editable div
+              html={this.state.dets.c} // innerHTML of the editable div
               disabled={false}       // use true to disable editing
               onChange={this.handleChange} // handle innerHTML change
               tagName='div' // Use a custom HTML tag (uses a div by default)

@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
-import Invoice from './Invoice';
-import Pdf from './Pdf';
+// import Invoice from './Invoice';
+// import Pdf from './Pdf';
 import INVOICE_DEFAULTS from '../defaults'
 
 function Main() {
@@ -10,7 +10,7 @@ function Main() {
   const [view, changeView] = useState(true);
 
   function editField (e) {
-    
+
   }
 
   function getPDF (){
@@ -52,7 +52,8 @@ function Main() {
 
   return (
     <div className='main'>
-        {view ? <Invoice details={invDets}/> : <Pdf doc={pdf}/>}
+        {/* {view ? <Invoice details={invDets}/> : <Pdf doc={pdf}/>} */}
+
         <button onClick={createPDF}>download</button>
         <button onClick={changeToPDF}>Change view</button>
     </div>
