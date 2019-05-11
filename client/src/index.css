@@ -58,7 +58,7 @@ header {
 
 .items {
   display: grid;
-  grid-template-columns: 2rem 3rem 8rem 6fr 4rem 1fr;
+  grid-template-columns: 2rem 3rem 6rem 6rem 6fr 4rem 1fr;
   grid-gap: 1rem 1rem;
   margin: 1rem;
 
