@@ -13,7 +13,9 @@ async function saveToPDF (html) {
   const page = await browser.newPage();
   await page.setContent(html)
   const pdf = await page.pdf({format: 'A4'})
-  await writeFile('pdf.pdf', pdf)
+  await writeFile('pdf2.pdf', pdf)
+  console.log('written pdf');
+  
 }
 
 module.exports = saveToPDF

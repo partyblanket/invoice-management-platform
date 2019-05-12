@@ -56,7 +56,7 @@ header {
 
 }
 
-.items {
+.items .line{
   display: grid;
   grid-template-columns: 2rem 3rem 6rem 6rem 6fr 4rem 1fr;
   grid-gap: 1rem 1rem;
@@ -68,3 +68,94 @@ header {
   height: 1rem;
   font-size: 1.3rem;
 }
+
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  width: 2rem;
+}
+
+.note-total {
+  display: grid;
+  justify-content: flex-end;
+  margin-right: 3rem;
+  grid-template-rows: auto;
+  grid-template-columns: 1fr 15rem 11rem;
+  grid-template-areas:
+    "note exvat exvatamnt"
+    "note vat vatamnt"
+    "note incvat incvatamnt";
+  text-align: right;
+  margin-top: 1rem;
+}
+
+.note-total *{
+  margin: 0.7rem;
+  font-size: 1.8rem;
+}
+
+.exvat {
+  grid-area: exvat;
+  
+}
+
+.exvatamnt {
+  grid-area: exvatamnt;
+  text-align: left;
+}
+
+.incvat {
+  grid-area: incvat;
+}
+
+.incvatamnt {
+  grid-area: incvatamnt;
+  text-align: left;
+}
+
+.vat {
+  grid-area: vat;
+}
+
+.vatamnt {
+  grid-area: vatamnt;
+  text-align: left;
+}
+
+.note {
+  grid-area: note;
+  text-align: left;
+  margin: 2rem;
+  font-size: 1rem;
+}
+
+.head {
+  display: flex;
+  flex-direction: row;
+}
+
+.button{
+    display:inline-block;
+    padding:0.2em 1.45em;
+    margin:0.1em;
+    border:0.15em solid #CCCCCC;
+    box-sizing: border-box;
+    text-decoration:none;
+    font-family:'Segoe UI','Roboto',sans-serif;
+    font-weight:400;
+    color:#000000;
+    background-color:#CCCCCC;
+    text-align:center;
+    position:relative;
+  }
+  .button:hover{
+    border-color:#7a7a7a;
+    cursor: pointer;
+  }
+  .button:active{
+    background-color:#999999;
+  }
