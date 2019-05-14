@@ -7,8 +7,8 @@ import axios from 'axios';
 
 // axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
 
-export async function postInvoice(invoiceDets) {
-    const { data } = await axios.post('/api/',invoiceDets)
+export async function postInvoice(userid, invoiceDets, invoiceid = null) {
+    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceid, invoiceDets})
     return {
         type: 'POST_INVOICE',
         data,
@@ -31,8 +31,27 @@ export async function login(email, password) {
 
     return {
         type: 'LOGIN',
-        id: data._id,
-        email: data.email,
-        error: data.status || null,
+        ...data
     };
+}
+
+export function toggleSettings() {
+    return {
+        type: 'TOGGLE_SETTINGS',
+    };
+}
+
+export async function saveSettings(userid, data) {
+    const response = await axios.post('/api/updatesettings',{userid, data})
+   
+    if(response.data.success) {
+        return {
+            type: 'SET_SETTINGS',
+            ...data
+        };
+    }else{
+        console.log('set settings error');
+        
+    }
+
 }

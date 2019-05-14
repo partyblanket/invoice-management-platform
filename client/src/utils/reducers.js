@@ -1,5 +1,3 @@
-import { log } from "util";
-
 export default function(state = {}, action) {
   
   if (action.type === 'POST_INVOICE') {
@@ -9,13 +7,25 @@ export default function(state = {}, action) {
       };
   }
   
-  if (action.type == 'LOGIN') {
-   
+  if (action.type === 'LOGIN') {
     state = {
       ...state,
-      userid: action.id,
-      email: action.email,
-      error: action.error,
+      ...action
+    }; 
+  }
+
+  if (action.type === 'SET_SETTINGS') {
+    state = {
+      ...state,
+      ...action
+    }; 
+  }
+
+  if (action.type === 'TOGGLE_SETTINGS') {
+    const newSettingsState = !state.showSettings
+    state = {
+      ...state,
+      showSettings: newSettingsState
     }; 
   }
   // if (action.type == 'USER_LEFT') {

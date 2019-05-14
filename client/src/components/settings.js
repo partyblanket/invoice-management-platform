@@ -1,21 +1,31 @@
-import React, { useState, useEffect } from 'react'
+import React, {useState} from 'react'
 import { connect } from 'react-redux';
-import {  } from '../utils/actions';
+import { saveSettings } from '../utils/actions';
 
 
-const activeItems = ['first']
+const activeItems = ['name', 'company', 'addressLineOne', 'addressLineTwo', 'postcode', 'city', 'phone']
 
 const settingsItems = {
-  first: {name: 'First Name'}
+  name: {title: 'Name'},
+  company: {title: 'Company', type:'string'},
+  addressLineOne: {title: 'Address Line 1', type:'string'},
+  addressLineTwo: {title: 'Address Line 2', type:'string'},
+  postcode: {title: 'Postcode', type:'string'},
+  city: {title: 'City', type:'string'},
+  phone: {title: 'Phone Number', type:'string'},
+  vat: {title: 'VAT rates', type:'arrayOfString'},
 }
 
 
 
 
 
-function Settings() {
+function Settings(props) {
+  const [localSettings, setLocalSettings] = useState(props.settings)
 
-  const [settings, setSettings] = useState({})
+  const handleChange = (e) => {
+    setLocalSettings({...localSettings, [e.target.name]: e.target.value}); 
+  }
 
   return (
     <div id='settings'>
@@ -23,9 +33,10 @@ function Settings() {
         <div>General</div>
       </div>
       <div id='items'>
-        {activeItems.map(el => (<>
-          <div>{settingsItems[el].name}</div><input type='text'></input>
-        </>))}
+        {activeItems.map(el => (<div key={el}>
+          <div>{settingsItems[el].title}</div><input type='text' name={el} value={localSettings[el] || ''} onChange={handleChange}></input>
+        </div>))}
+        <div className='button save' onClick={() => props.dispatch(saveSettings(props.userid, localSettings))}>SAVE</div>
       </div>
     </div>
   )
@@ -33,7 +44,8 @@ function Settings() {
 
 function mapStateToProps(state) {
   return {
-
+    settings: state.settings || {},
+    userid: state.userid
   };
 };
 

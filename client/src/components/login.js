@@ -43,7 +43,7 @@ function Login(props) {
             <input name='email' type="email" value={loginDets.email} onChange={handleChange} placeholder="email"/>
             <input name='password' type="password" value={loginDets.password} onChange={handleChange} placeholder="password"/>
             <button>login</button>
-            <p className="message">Not registered? <a onClick={() => {setRegestering(true)}}> Create an account</a></p>
+            <p className="message">Not registered? </p><p className='link' onClick={() => {setRegestering(true)}}> Create an account</p>
           </form>
         </div>
         </div>
@@ -58,7 +58,7 @@ function Login(props) {
             <input name='company' type="text" value={registerDets.company} onChange={handleChange} placeholder="company"/>
             <input name='password' type="password" value={registerDets.password} onChange={handleChange} placeholder="password"/>
             <button>register</button>
-            <p className="message">Already registered? <a onClick={() => {setRegestering(false)}}>Sign In</a></p>
+            <p className="message">Already registered? </p><p className='link' onClick={() => {setRegestering(false)}}>Sign In</p>
           </form>
         </div>
       </div>

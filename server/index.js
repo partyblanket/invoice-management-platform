@@ -12,9 +12,7 @@ const server = require('http').Server(app);
 const pdfTemplate = require('./templates/');
 const saveToPdf = require('./handlepdf')
 
-const mongodb = require('mongodb')
-
-const MongoClient = mongodb.MongoClient
+const {MongoClient, ObjectID} = require('mongodb')
 
 const connectionURL = 'mongodb://127.0.0.1:27017'
 
@@ -65,7 +63,8 @@ app.post('/api/register', async (req,res) => {
     db.collection('users').insertOne({
         email,
         hashedPassword,
-        company
+        company,
+        salesIdArray: [],
       }, (err, result) => {
         if(err) return console.log('error: ', err)
         console.log(result);
@@ -88,7 +87,45 @@ app.post('/api/login', async (req,res) => {
     }else{
         res.json({id: null, email, status: 'not allowed'})
     }
-      
+})
+
+app.post('/api/updatesettings', async (req,res) => {
+    const { userid, data } = req.body
+
+    const result = await db.collection('users').updateOne({
+        _id: new ObjectID(userid)
+    },{
+        $set:{...data}
+    })
+    if(result.result.ok !== 1) return res.json({succes: false})
+    return res.json({success: true})
+})
+
+app.post('/api/saveinvoice', async (req,res) => {
+    const userid = new ObjectID(req.body.userid)
+    const invoiceid = req.body.userid ? new ObjectID(req.body.userid) : null
+    const current = invoiceid ? await db.collection('sales').findOne({_id: new ObjectID(invoiceid)}) : null
+    console.log(req.body);
+    if(!current){
+        const {insertedId} = await db.collection('sales').insertOne({
+            ...req.body.invoiceDets
+        })
+        
+        console.log(insertedId);
+        db.collection('users').updateOne({
+            _id: userid
+        },{
+            $push: {salesIdArray: insertedId}
+        })
+    }else{
+        db.collection('sales').updateOne({
+            _id: invoiceid
+        },{
+            $set:{...invoiceDets}
+        })
+    }
+
+    
 })
 
 server.listen(PORT, () => console.log(`listening on ${PORT}`))

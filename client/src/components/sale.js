@@ -96,7 +96,7 @@ function Sale(props) {
 
   return (
     <div className='main'>
-      <div className='head'><p>Invoice # 1234</p><div><div className='save button' onClick={(e) => props.dispatch(postInvoice(dets))}>SAVE</div></div></div>
+      <div className='head'><p>Invoice # 1234</p><div><div className='save button' onClick={(e) => props.dispatch(postInvoice(props._id, dets))}>SAVE</div></div></div>
       <div className='client-and-settings-container'>
         <div className='col1'>
           <p>Billing</p><p />

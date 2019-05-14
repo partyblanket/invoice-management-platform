@@ -25,6 +25,15 @@ header {
 
 }
 
+header .settings {
+  position: absolute;
+  height: 3rem;
+  top: 0;
+  right: 0;
+  margin: 1rem;
+  cursor: pointer;
+}
+
 .main {
   font-size: 2rem;
   display: flex;
@@ -173,3 +182,4 @@ input[type="number"] {
     grid-template-columns: 1fr 2fr;
 
   }
+
