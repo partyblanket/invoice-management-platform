@@ -1,16 +1,22 @@
 export default function(state = {}, action) {
   
-  if (action.type === 'POST_INVOICE') {
-      state = {
-        ...state,
-        success: action.success,
-      };
+  if (action.type === 'SALEDETS') {
+    const updatedInvoices = state.invoices 
+      ? {...state.invoices, [action.insertedId]: {...action.rest}} 
+      : {[action.insertedId]: {...action.rest}}
+
+    state = {
+      ...state,
+      sales: {...updatedInvoices},
+      salesIdArray: [...state.salesIdArray, action.insertedId]
+    }
   }
   
   if (action.type === 'LOGIN') {
     state = {
       ...state,
-      ...action
+      ...action,
+      currentSale: action.salesIdArray[0] || null
     }; 
   }
 

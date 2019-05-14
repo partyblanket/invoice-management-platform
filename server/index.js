@@ -67,8 +67,6 @@ app.post('/api/register', async (req,res) => {
         salesIdArray: [],
       }, (err, result) => {
         if(err) return console.log('error: ', err)
-        console.log(result);
-        
         res.json(result)
       })
 })
@@ -78,7 +76,6 @@ app.post('/api/login', async (req,res) => {
     const result = await db.collection('users').findOne({
         email,
     })
-    console.log(result);
     
     if(result === null) return res.json({id: null, email, status: 'not found'})
     const allowed = await checkPassword(password, result.hashedPassword)
@@ -103,29 +100,36 @@ app.post('/api/updatesettings', async (req,res) => {
 
 app.post('/api/saveinvoice', async (req,res) => {
     const userid = new ObjectID(req.body.userid)
-    const invoiceid = req.body.userid ? new ObjectID(req.body.userid) : null
+    const invoiceid = req.body.invoiceid ? new ObjectID(req.body.invoiceid) : null
     const current = invoiceid ? await db.collection('sales').findOne({_id: new ObjectID(invoiceid)}) : null
-    console.log(req.body);
-    if(!current){
+
+    
+    if(!current){        
         const {insertedId} = await db.collection('sales').insertOne({
             ...req.body.invoiceDets
         })
-        
-        console.log(insertedId);
+                res.json({insertedId, ...req.body.invoiceDets })
         db.collection('users').updateOne({
             _id: userid
         },{
             $push: {salesIdArray: insertedId}
         })
     }else{
+        const insertedId = req.body.userid
+        res.json({insertedId, ...req.body.invoiceDets })
         db.collection('sales').updateOne({
             _id: invoiceid
         },{
-            $set:{...invoiceDets}
+            $set:{...req.body.invoiceDets}
         })
     }
+})
 
-    
+app.post('/api/getinvoice', async (req,res) => {
+    const userid = new ObjectID(req.body.userid)
+    const data = await db.collection('sales').findOne({_id: new ObjectID(req.body.invoiceid)})
+    res.json({...data})
+
 })
 
 server.listen(PORT, () => console.log(`listening on ${PORT}`))

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux';
-import { postInvoice } from '../utils/actions';
+import { postInvoice, getInvoice } from '../utils/actions';
 
 let counter = 0
 
@@ -64,6 +64,7 @@ function Sale(props) {
     }
     return setDets(newState)
   }
+
   const copyBilling = () => {
     const newState = { ...dets}
     newState.shippingAddressLineOne = newState.billingAddressLineOne
@@ -76,9 +77,13 @@ function Sale(props) {
     return setDets(newState)
   }
   useEffect(() => {
-
+    props.dispatch(getInvoice(props._id, props.currentSale))
     console.log(++counter)
-  })
+  },[props.currentSale])
+
+  useEffect(() => {
+    props.sales[props.currentSale] && setDets(props.sales[props.currentSale])
+  },[props.sales])
 
   const invoiceLines = dets.invoiceLines.map((el, index) => {
     return (
@@ -96,7 +101,7 @@ function Sale(props) {
 
   return (
     <div className='main'>
-      <div className='head'><p>Invoice # 1234</p><div><div className='save button' onClick={(e) => props.dispatch(postInvoice(props._id, dets))}>SAVE</div></div></div>
+      <div className='head'><p>Invoice # 1234</p><div><div className='save button' onClick={(e) => props.dispatch(postInvoice(props._id, dets, props.currentSale))}>SAVE</div></div></div>
       <div className='client-and-settings-container'>
         <div className='col1'>
           <p>Billing</p><p />
@@ -155,7 +160,11 @@ function Sale(props) {
 
 function mapStateToProps(state) {
   return {
-
+    sale: state.sale,
+    salesIdArray: state.salesIdArray,
+    currentSale: state.currentSale || null,
+    sales: state.sales || {},
+    _id: state._id
   };
 };
 
