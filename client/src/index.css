@@ -159,3 +159,17 @@ input[type="number"] {
   .button:active{
     background-color:#999999;
   }
+
+  #settings {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    margin: auto;
+    padding-top: 2rem;
+    max-width: 40rem;
+  }
+
+  #settings #items {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+
+  }

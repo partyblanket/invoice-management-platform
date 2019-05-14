@@ -6,8 +6,6 @@ let browser = null
 
 const writeFile = promisify(fs.writeFile)
 
-
-
 async function saveToPDF (html) {
   if (browser === null) browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox',], headless: true} );
   const page = await browser.newPage();

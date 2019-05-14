@@ -1,9 +1,22 @@
+import { log } from "util";
+
 export default function(state = {}, action) {
+  
   if (action.type === 'POST_INVOICE') {
       state = {
         ...state,
         success: action.success,
       };
+  }
+  
+  if (action.type == 'LOGIN') {
+   
+    state = {
+      ...state,
+      userid: action.id,
+      email: action.email,
+      error: action.error,
+    }; 
   }
   // if (action.type == 'USER_LEFT') {
   //     const relations = state.relations && state.relations.map(profile => {
