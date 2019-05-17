@@ -10,6 +10,21 @@ const views = {
   templates: ['logo']
 }
 
+const templates = 
+<div className='templates'>
+  <div>
+    <img src='template2.png'></img>
+    <div><input type='radio' /></div>
+  </div>
+  <div>
+  <img src='simple-template.png'></img>
+  <div><input type='radio' /></div>
+
+</div>
+</div>
+  ;
+
+
 const settingsItems = {
   name: {title: 'Name', type: 'string'},
   company: {title: 'Company', type:'string'},
@@ -37,6 +52,7 @@ function Settings(props) {
   // }, [])
 
   return (
+    <>
     <div id='settings'>
       <div id='category'>
         <div className='button' onClick={() => setView('general')}>General</div>
@@ -48,7 +64,10 @@ function Settings(props) {
         </div>))}
         <div className='button save' onClick={() => props.dispatch(saveSettings(props.userid, localSettings))}>SAVE</div>
       </div>
+      
     </div>
+    {view === 'templates' && templates}
+    </>
   )
 }
 

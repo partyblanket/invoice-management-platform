@@ -154,7 +154,7 @@ module.exports = (invoice, user) => {
                                   </td>
                                   
                                   <td>
-                                      ${invoice.company}<br>
+                                      ${invoice.billingCompany}<br>
                                       ${invoice.billingName}<br>
                                       ${invoice.billingPhone}
                                   </td>

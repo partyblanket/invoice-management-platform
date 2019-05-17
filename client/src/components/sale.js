@@ -6,21 +6,29 @@ let counter = 0
 
 function Sale(props) {
 
-  const invoiceDefault ={
+  const invoiceDefault = {
     amount: 1,
     sku: '',
     price: '',
     description: '',
     vat: '20%'
   }
-  
+
+  const invoiceTotals = {
+    vat: 0,
+    ex: 0,
+    inc: 0
+  }
+
   const detsDefault = {
+    billingCompany: '',
     billingName: '',
     billingPhone: '+49',
     billingAddressLineOne: '',
     billingAddressLineTwo: '',
     billingPostcode: '',
     billingCity: '',
+    shippingCompany: '',
     shippingName: '',
     shippingPhone: '',
     shippingAddressLineOne: '',
@@ -33,9 +41,10 @@ function Sale(props) {
     paymentTerms: '',
     dueDate: '',
     currency: 'EUR',
-    invoiceLines: [{...invoiceDefault}],
+    invoiceLines: [{ ...invoiceDefault }],
     privateNote: '',
     terms: '',
+    incVat: false,
   }
 
   const [shippingRadio, setShippingRadio] = useState(false)
@@ -43,59 +52,76 @@ function Sale(props) {
   const [dets, setDets] = useState(detsDefault)
 
   const changeHandler = (e, index) => {
-    if(e.target.parentElement.classList.contains('line')){
-      const newState = { ...dets}
+    if (e.target.parentElement.classList.contains('line') || e.target.parentElement.parentElement.classList.contains('line')) {
+      const newState = { ...dets }
       newState.invoiceLines[index][e.target.name] = e.target.value
       return setDets(newState)
     }
-    if(['billingName','billingPhone','billingAddressLineOne','billingAddressLineTwo','billingPostcode','billingCity','shippingName', 'shippingPhone', 'shippingAddressLineOne', 'shippingAddressLineTwo', 'shippingPostcode', 'shippingCity', 'shippingDate'].includes(e.target.name)) {
+    if (['billingName', 'billingPhone', 'billingAddressLineOne', 'billingAddressLineTwo', 'billingPostcode', 'billingCity', 'shippingName', 'shippingPhone', 'shippingAddressLineOne', 'shippingAddressLineTwo', 'shippingPostcode', 'shippingCity', 'shippingDate'].includes(e.target.name)) {
       setShippingRadio(false)
+    }
+    if (e.target.name === 'incVat') {
+      const newState = { ...dets, incVat: e.target.checked }
+      return setDets(newState)
     }
     const newState = { ...dets, [e.target.name]: e.target.value }
     setDets(newState)
   }
 
   const changeLine = (index) => {
-    const newState = { ...dets}
-    if(index > -1){
-      newState.invoiceLines.splice(index,1)
-    }else{
-      newState.invoiceLines.push({...invoiceDefault})
+    const newState = { ...dets }
+    if (index > -1) {
+      newState.invoiceLines.splice(index, 1)
+    } else {
+      newState.invoiceLines.push({ ...invoiceDefault })
     }
     return setDets(newState)
   }
 
   const copyBilling = () => {
-    const newState = { ...dets}
+    const newState = { ...dets }
     newState.shippingAddressLineOne = newState.billingAddressLineOne
     newState.shippingAddressLineTwo = newState.billingAddressLineTwo
     newState.shippingCity = newState.billingCity
     newState.shippingName = newState.billingName
     newState.shippingPhone = newState.billingPhone
     newState.shippingPostcode = newState.billingPostcode
+    newState.shippingCompany = newState.billingCompany
+    
     setShippingRadio(true)
     return setDets(newState)
   }
   useEffect(() => {
-    if(props.currentSale === null) return setDets(detsDefault)
+    if (props.currentSale === null) return setDets(detsDefault)
     props.dispatch(getInvoice(props._id, props.currentSale))
     console.log(++counter)
-  },[props.currentSale])
+  }, [props.currentSale])
 
   useEffect(() => {
     props.sales[props.currentSale] && setDets(props.sales[props.currentSale])
-  },[props.sales])
+  }, [props.sales])
 
   const invoiceLines = dets.invoiceLines.map((el, index) => {
+    if (dets.incVat) {
+      invoiceTotals.inc += el.amount * el.price
+      invoiceTotals.ex += el.amount * el.price / ((el.vat / 100) + 1)
+      invoiceTotals.vat += (el.amount * el.price / ((el.vat / 100) + 1)) * (el.vat / 100)
+    } else {
+      invoiceTotals.inc += el.amount * el.price * ((el.vat / 100) + 1);
+      invoiceTotals.ex += el.amount * el.price;
+      invoiceTotals.vat += el.amount * el.price * (el.vat / 100);
+    }
+    // invoiceTotals.inc += dets.incVat ? el.amount * el.price : (el.amount * el.price) * (el.vat/100)+1
+
     return (
       <div className='line' key={index}>
-        <img alt='remove line'src='/minus.svg' style={{ height: '1.5rem' }} onClick={() => changeLine(index)}></img>
-        <input type='number' name='amount' value={el.amount} onChange={(e) => changeHandler(e, index)}/>
-        <input type='text' name='sku' value={el.sku} onChange={(e) => changeHandler(e, index)}/>
-        <input type='text' name='price' value={el.price}  onChange={(e) => changeHandler(e, index)}/>
-        <input type='text' name='description' value={el.description} onChange={(e) => changeHandler(e, index)}/>
-        <input type='text' name='vat' value={el.vat} onChange={(e) => changeHandler(e, index)}/>
-        <div>{Number.isNaN(el.amount * el.price)?'':el.amount * el.price}</div>
+        <img alt='remove line' src='/minus.svg' style={{ height: '1.5rem' }} onClick={() => changeLine(index)}></img>
+        <input type='number' name='amount' value={el.amount} onChange={(e) => changeHandler(e, index)} />
+        <input type='text' name='sku' value={el.sku} onChange={(e) => changeHandler(e, index)} />
+        <input type='number' name='price' value={el.price} onChange={(e) => changeHandler(e, index)} />
+        <input type='text' name='description' value={el.description} onChange={(e) => changeHandler(e, index)} />
+        <div><input type='number' name='vat' value={el.vat} onChange={(e) => changeHandler(e, index)} />%</div>
+        <div>{Number.isNaN(el.amount * el.price) ? '' : el.amount * el.price}</div>
       </div>
     )
   })
@@ -105,9 +131,9 @@ function Sale(props) {
       <div className='head'>
         <p>Invoice # 1234</p>
         <div>
-          <div className='save button' onClick={(e) => props.dispatch(postInvoice(props._id, dets, props.currentSale))}>SAVE</div>
+          <div id='save' className='button' onClick={(e) => props.dispatch(postInvoice(props._id, dets, props.currentSale))}>SAVE</div>
           <div className='print button' onClick={(e) => props.dispatch(printInvoice(props._id, dets, props.currentSale))}>Print</div>
-          <div className='template button' onClick={(e) => props.dispatch(printInvoice(props._id, dets, props.currentSale))}><img alt='template' src='/template.svg'/>
+          <div className='template button' onClick={(e) => props.dispatch(printInvoice(props._id, dets, props.currentSale))}><img alt='template' src='/email.svg' />
             {/* <div className='dropdown'>
               <div>
                 <img src='/simple-template.png' />
@@ -120,6 +146,7 @@ function Sale(props) {
       <div className='client-and-settings-container'>
         <div className='col1'>
           <p>Billing</p><p />
+          <p>Company</p><input type='text' name='billingCompany' onChange={e => changeHandler(e)} value={dets.billingCompany} />
           <p>Name</p><input type='text' name='billingName' onChange={e => changeHandler(e)} value={dets.billingName} />
           <p>Phone</p><input type='text' name='billingPhone' onChange={e => changeHandler(e)} value={dets.billingPhone}></input>
           <p>Address Line 1</p><input type='text' name='billingAddressLineOne' onChange={e => changeHandler(e)} value={dets.billingAddressLineOne}></input>
@@ -129,7 +156,9 @@ function Sale(props) {
 
         </div>
         <div className='col2'>
-          <p>Shipping</p><div style={{ display: 'flex', justifySelf: 'left', marginLeft: '2rem' }}><input type='radio' checked={shippingRadio} onChange={copyBilling}/><p>same as billing</p></div>
+        
+          <p>Shipping</p><div style={{ display: 'flex', justifySelf: 'left', marginLeft: '2rem' }}><input type='radio' checked={shippingRadio} onChange={copyBilling} /><p>same as billing</p></div>
+          <p>Company</p><input type='text' name='shippingCompany' onChange={e => changeHandler(e)} value={dets.shippingCompany} />
           <p>Name</p><input type='text' name='shippingName' onChange={e => changeHandler(e)} value={dets.shippingName} />
           <p>Phone</p><input type='text' name='shippingPhone' onChange={e => changeHandler(e)} value={dets.shippingPhone}></input>
           <p>Address Line 1</p><input type='text' name='shippingAddressLineOne' onChange={e => changeHandler(e)} value={dets.shippingAddressLineOne}></input>
@@ -144,6 +173,8 @@ function Sale(props) {
           <p>Invoice Date</p><input type='date' name='invoiceDate' onChange={e => changeHandler(e)} value={dets.invoiceDate}></input>
           <p>Due Date</p><input type='date' name='dueDate' onChange={e => changeHandler(e)} value={dets.dueDate}></input>
           <p>Currency</p><input type='text' name='currency' onChange={e => changeHandler(e)} value={dets.currency}></input>
+          <p>VAT rate</p><input type='number' name='vat' onChange={e => changeHandler(e)} value={dets.vat}></input>
+          <p>Including VAT</p><input type='checkbox' checked={dets.incVat} name='incVat' onChange={e => changeHandler(e)}></input>
 
         </div>
       </div>
@@ -159,16 +190,27 @@ function Sale(props) {
         </div>
         {invoiceLines}
         <div className='note-total'>
-          <p className='exvat'>Total ex. VAT:</p><p className='exvatamnt'>EUR 100</p>
-          <p className='vat'>Total VAT:</p><p className='vatamnt'>EUR 10</p>
-          <p className='incvat'>Total inv. VAT:</p><p className='incvatamnt'>EUR 110</p>
-          {/* <textarea value={dets.privateNote} rows="4" cols="50" className='note' /> */}
+          <div className='terms'>
+            <div>Terms &amp; Conditions</div>
+            <textarea name='terms' rows="5" cols="35" value={dets.terms} onChange={e => changeHandler(e)} />
+          </div>
+          <div className='total'>
+            <p className='exvat'>Total ex. VAT:</p><p className='exvatamnt'>{dets.currency} {invoiceTotals.ex.toFixed(2)}</p>
+            <p className='vat'>Total VAT:</p><p className='vatamnt'>{dets.currency} {invoiceTotals.vat.toFixed(2)}</p>
+            <p className='incvat'>Total inv. VAT:</p><p className='incvatamnt'>{dets.currency} {invoiceTotals.inc.toFixed(2)}</p>
+          </div>
+
+
+
         </div>
-
-
+        <div className='note'>
+          <div>Note:</div>
+          <textarea name='privateNote' value={dets.privateNote} rows="5" cols="80" onChange={e => changeHandler(e)} />
+        </div>
       </div>
-      {/* <div className='terms'>Terms &amp; Conditions</div> */}
-      
+
+
+
     </div>
   )
 }
