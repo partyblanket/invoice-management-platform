@@ -11,18 +11,19 @@ body {
   background: rgba(242, 241, 239, 1);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-}
 
 header {
+  display: flex;
   position: relative;
-  height: 6rem;
+  height: 5rem;
   font-size: 2rem;
   background: rgba(200, 247, 197, 1);
   width: 100vw;
+  text-align: center;
+}
 
+header .title {
+  margin: auto
 }
 
 header .settings {
@@ -33,6 +34,52 @@ header .settings {
   margin: 1rem;
   cursor: pointer;
 }
+
+header .edit {
+  position: absolute;
+  height: 3rem;
+  top: 0;
+  left: 0;
+  margin: 1rem;
+  cursor: pointer;
+}
+
+#sidebar {
+  font-size: 1rem;
+}
+
+#sidebar .menu {
+  position: absolute;
+  width: 13rem;
+  height: 100%;
+  background: rgba(200, 247, 197, 1);
+  border-right: #000000 1px solid;
+  border-top: #000000 1px solid;
+  transform: translateX(-100%);
+  padding: 1rem;
+
+}
+
+#sidebar .menu.visible {
+  transform: translateX(0);
+
+  transition: transform 1s;
+}
+
+#sidebar .menu p{
+  cursor: pointer;
+
+
+}
+
+#sidebar .menu b.new {
+  padding: .4rem;
+  cursor: pointer;
+  background: white;
+  margin: 1rem;
+  border: 1px black solid;
+  border-radius: 10px;
+} 
 
 .main {
   font-size: 2rem;
@@ -145,6 +192,8 @@ input[type="number"] {
 .head {
   display: flex;
   flex-direction: row;
+  height: 5rem;
+  align-items: center;
 }
 
 .button{
@@ -169,6 +218,38 @@ input[type="number"] {
     background-color:#999999;
   }
 
+  .button.save {
+    margin-left: 1rem;
+  } 
+
+  .button.print {
+    padding-right: .2rem;
+    margin-right: 0;
+  } 
+
+  .button.template {
+    position: relative;
+    width: 1rem;
+    margin: 0;
+    padding-left: .2rem;
+  }
+
+  /* .button.template .dropdown {
+    position: absolute;
+    display: flex;
+    height: 10rem;
+    width: 10rem;
+    background: #999999;
+    left: 0.5rem;
+    top: 0.2rem;
+
+    transform: translateX(-50%)
+  } */
+
+  .button > img {
+    height: 1.8rem;
+  }
+
   #settings {
     display: grid;
     grid-template-columns: 1fr 3fr;
@@ -183,3 +264,29 @@ input[type="number"] {
 
   }
 
+  #settings #category div {
+    margin: 0.5rem;
+    padding: 0.5rem;
+    font-size: 1.5rem;
+    width: 10rem;
+  }
+
+#id {
+  
+}
+
+.template-inner {
+  font-size: 5px;
+  background: #FAFBF2;
+  margin: 0 auto;
+  margin-top: 2em; 
+  width: 84.1em;
+  height: 118.9em;
+  position: absolute; 
+  left: 0; 
+  right: 0; 
+  margin-left: auto; 
+  margin-right: auto; 
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  display: flex;
+}

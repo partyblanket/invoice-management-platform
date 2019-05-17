@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux';
-import { postInvoice, getInvoice } from '../utils/actions';
+import { postInvoice, getInvoice, printInvoice } from '../utils/actions';
 
 let counter = 0
 
@@ -77,6 +77,7 @@ function Sale(props) {
     return setDets(newState)
   }
   useEffect(() => {
+    if(props.currentSale === null) return setDets(detsDefault)
     props.dispatch(getInvoice(props._id, props.currentSale))
     console.log(++counter)
   },[props.currentSale])
@@ -101,7 +102,21 @@ function Sale(props) {
 
   return (
     <div className='main'>
-      <div className='head'><p>Invoice # 1234</p><div><div className='save button' onClick={(e) => props.dispatch(postInvoice(props._id, dets, props.currentSale))}>SAVE</div></div></div>
+      <div className='head'>
+        <p>Invoice # 1234</p>
+        <div>
+          <div className='save button' onClick={(e) => props.dispatch(postInvoice(props._id, dets, props.currentSale))}>SAVE</div>
+          <div className='print button' onClick={(e) => props.dispatch(printInvoice(props._id, dets, props.currentSale))}>Print</div>
+          <div className='template button' onClick={(e) => props.dispatch(printInvoice(props._id, dets, props.currentSale))}><img alt='template' src='/template.svg'/>
+            {/* <div className='dropdown'>
+              <div>
+                <img src='/simple-template.png' />
+              </div>
+            </div> */}
+          </div>
+
+        </div>
+      </div>
       <div className='client-and-settings-container'>
         <div className='col1'>
           <p>Billing</p><p />

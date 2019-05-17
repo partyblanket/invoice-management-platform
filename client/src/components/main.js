@@ -12,7 +12,9 @@ function Main(props) {
   if(props.showSettings) return <Settings/>
 
   return (
-    <Sale/>
+    <>
+      <Sale/>
+    </>
   )
 }
 

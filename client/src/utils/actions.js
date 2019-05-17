@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { saveAs } from 'file-saver';
 
 // axios.create({
 //   xsrfCookieName: 'mytoken',
@@ -52,7 +53,15 @@ export function toggleSettings() {
     };
 }
 
+export function toggleSidebar() {
+    return {
+        type: 'TOGGLE_SIDEBAR',
+    };
+}
+
 export async function saveSettings(userid, data) {
+    console.log(data);
+    
     const response = await axios.post('/api/updatesettings',{userid, data})
     if(response.data.success) {
         return {
@@ -64,3 +73,24 @@ export async function saveSettings(userid, data) {
     }
 }
 
+export function setCurrentSale(saleid) {
+    return {
+        type: 'SET_CURRENTSALE',
+        saleid
+    };
+}
+
+export function printInvoice(userid, invoiceDets, invoiceid = null) {
+    axios.post('/api/printinvoice',{userid, invoiceDets, invoiceid})
+        .then(resp => {
+            return axios.get('/api/fetchinvoice/'+resp.data.file, {responseType: 'blob'})
+        })
+        .then((res) => {
+            const pdfBlob = new Blob([res.data], { type: 'application/pdf' });
+            saveAs(pdfBlob, 'generatedDocument.pdf')
+        })
+    
+    return {
+        type: 'PRINT_FINISHED'
+    };
+}

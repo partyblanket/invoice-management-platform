@@ -6,6 +6,8 @@ const csurf = require('csurf');
 const bcrypt = require('bcryptjs')
 const fs = require('fs')
 const pdf = require('html-pdf');
+const path = require('path')
+
 
 const app = express();
 const server = require('http').Server(app);
@@ -88,7 +90,8 @@ app.post('/api/login', async (req,res) => {
 
 app.post('/api/updatesettings', async (req,res) => {
     const { userid, data } = req.body
-
+    console.log(req.body);
+    
     const result = await db.collection('users').updateOne({
         _id: new ObjectID(userid)
     },{
@@ -128,8 +131,35 @@ app.post('/api/saveinvoice', async (req,res) => {
 app.post('/api/getinvoice', async (req,res) => {
     const userid = new ObjectID(req.body.userid)
     const data = await db.collection('sales').findOne({_id: new ObjectID(req.body.invoiceid)})
-    res.json({...data})
+    res.json({...data, templates: ['simple', 'advances']})
 
+})
+
+app.post('/api/printinvoice', async (req,res) => {
+    const {invoiceDets} = req.body
+    const userid = new ObjectID(req.body.userid)
+    const invoiceid = req.body.invoiceid ? new ObjectID(req.body.invoiceid) : null
+    const userDets = await db.collection('users').findOne({_id: userid})
+    
+    const pdf = await saveToPdf(invoiceDets, userDets,'simple')
+    res.json({file: pdf})
+})
+
+app.get('/api/fetchinvoice/:filename', (req,res) => {
+    const filename = req.params.filename
+    console.log(__dirname, 'filename: ', filename);
+    const file = path.join(__dirname,'invoices',filename+'.pdf')
+    console.log('file: ',file);
+    res.sendFile(file,{}, (err) => {
+        if (err) {
+            console.log(err);
+            res.status(err.status).end();
+          }
+          else {
+            console.log('Sent:', filename);
+          }
+    })
+    
 })
 
 server.listen(PORT, () => console.log(`listening on ${PORT}`))

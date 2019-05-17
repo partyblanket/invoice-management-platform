@@ -5,18 +5,24 @@ export default function(state = {}, action) {
       ? {...state.invoices, [action.insertedId]: {...action.rest}} 
       : {[action.insertedId]: {...action.rest}}
 
+    const newSaleIdArray = 
+      state.salesIdArray.indexOf(action.insertedId) === -1
+      ? [...state.salesIdArray, action.insertedId]
+      : [...state.salesIdArray]
+      
     state = {
       ...state,
       sales: {...updatedInvoices},
-      salesIdArray: [...state.salesIdArray, action.insertedId]
+      salesIdArray: newSaleIdArray
     }
   }
   
   if (action.type === 'LOGIN') {
+    const currentSale = action.salesIdArray ? action.salesIdArray[0] : null
     state = {
       ...state,
       ...action,
-      currentSale: action.salesIdArray[0] || null
+      currentSale
     }; 
   }
 
@@ -34,49 +40,22 @@ export default function(state = {}, action) {
       showSettings: newSettingsState
     }; 
   }
-  // if (action.type == 'USER_LEFT') {
-  //     const relations = state.relations && state.relations.map(profile => {
-  //       if(profile.contact === action.id) {
-  //         return {
-  //           ...profile,
-  //           online: false
-  //         }
-  //       }else{
-  //         return profile
-  //       }
-        
-  //     })
-  //     state = {
-  //       ...state,
-  //       relations
-  //     }
-  // }
 
-  // if (action.type == 'USER_JOINED') {
-  //   const relations = state.relations && state.relations.map(profile => {
-  //     if(profile.contact === action.id) {
-  //       return {
-  //         ...profile,
-  //         online: true
-  //       }
-  //     }else{
-  //       return profile
-  //     }
-      
-  //   })
-  //   state = {
-  //     ...state,
-  //     relations
-  //   }
-  // }
+  if (action.type === 'TOGGLE_SIDEBAR') {
+    const newSidebarState = !state.showSidebar
+    state = {
+      ...state,
+      showSidebar: newSidebarState
+    }; 
+  }
 
-  // if (action.type == 'GET_PROFILE') {
-  //   state = {
-  //     ...state,
-  //     ownProfile : action.data,
-  //     copyOwnProfile : action.data
-  //   }
-  // }
+  if (action.type === 'SET_CURRENTSALE') {
+    state = {
+      ...state,
+      currentSale: action.saleid
+    }; 
+  }
+  
   
   return state;
 }

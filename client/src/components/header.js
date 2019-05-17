@@ -1,19 +1,22 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { toggleSettings } from '../utils/actions';
+import { toggleSettings, toggleSidebar } from '../utils/actions';
 
 function Header(props) {
   return (
     <header>
-      <div>Create Invoice App</div>
-      <img alt='' className='settings' src='/settings.svg' onClick={() => props.dispatch(toggleSettings())}/>
+      <img alt='edit' className='edit' src='/edit.svg' onClick={() => props.dispatch(toggleSidebar())}/>
+      <div className='title'>Create Invoice App</div>
+      <img alt='settings' className='settings' src='/settings.svg' onClick={() => props.dispatch(toggleSettings())}/>
     </header>
   )
 }
 
 function mapStateToProps(state) {
   return {
-    showSettings: state.showSettings
+    showSettings: state.showSettings,
+    showSidebar: state.showSidebar,
+
   };
 };
 

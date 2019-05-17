@@ -1,6 +1,9 @@
-module.exports = (data) => {
+const simple = require('./simple')
+
+module.exports = (invoice, user, template) => {
+  if(template === 'simple') return simple(invoice, user)
   const today = new Date();
-  const lines = data.invoiceLines.map((el, index) => `
+  const lines = invoice.invoiceLines.map((el, index) => `
   <div class='line'>
   <p>${el.amount}</p>
   <p>${el.sku}</p>
