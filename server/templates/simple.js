@@ -156,7 +156,9 @@ module.exports = (invoice, user) => {
                                   <td>
                                       ${invoice.billingCompany}<br>
                                       ${invoice.billingName}<br>
-                                      ${invoice.billingPhone}
+                                      ${invoice.billingPhone}<br>
+                                      ${invoice.billingAddressLineOne}<br>
+                                      ${invoice.billingCity}, ${invoice.billingPostcode}
                                   </td>
                               </tr>
                           </table>
@@ -185,6 +187,9 @@ module.exports = (invoice, user) => {
                       </td>
                   </tr>
               </table>
+              <div style='text-align: center; width: 100%;'>
+              ${invoice.terms}
+              </div>
           </div>
       </body>
     </html>

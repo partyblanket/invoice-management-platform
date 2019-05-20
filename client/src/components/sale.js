@@ -9,9 +9,9 @@ function Sale(props) {
   const invoiceDefault = {
     amount: 1,
     sku: '',
-    price: '',
+    price: '1',
     description: '',
-    vat: '20%'
+    vat: '20'
   }
 
   const invoiceTotals = {
@@ -111,7 +111,6 @@ function Sale(props) {
       invoiceTotals.ex += el.amount * el.price;
       invoiceTotals.vat += el.amount * el.price * (el.vat / 100);
     }
-    // invoiceTotals.inc += dets.incVat ? el.amount * el.price : (el.amount * el.price) * (el.vat/100)+1
 
     return (
       <div className='line' key={index}>
@@ -173,7 +172,6 @@ function Sale(props) {
           <p>Invoice Date</p><input type='date' name='invoiceDate' onChange={e => changeHandler(e)} value={dets.invoiceDate}></input>
           <p>Due Date</p><input type='date' name='dueDate' onChange={e => changeHandler(e)} value={dets.dueDate}></input>
           <p>Currency</p><input type='text' name='currency' onChange={e => changeHandler(e)} value={dets.currency}></input>
-          <p>VAT rate</p><input type='number' name='vat' onChange={e => changeHandler(e)} value={dets.vat}></input>
           <p>Including VAT</p><input type='checkbox' checked={dets.incVat} name='incVat' onChange={e => changeHandler(e)}></input>
 
         </div>
