@@ -17,6 +17,7 @@ This app was build in a little over one week as final project at SPICED Full Sta
 
 ## To-do
 
+* Clean & refactor code
 * Testing
 * Secuirity
 * Mongoose

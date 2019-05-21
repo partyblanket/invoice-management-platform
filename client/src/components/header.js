@@ -5,9 +5,9 @@ import { toggleSettings, toggleSidebar } from '../utils/actions';
 function Header(props) {
   return (
     <header>
-      <img alt='edit' className='edit' src='/edit.svg' onClick={() => props.dispatch(toggleSidebar())}/>
+      <img alt='edit' className='edit' src='/icons/edit.svg' onClick={() => props.dispatch(toggleSidebar())}/>
       <div className='title'>Invoice Builder</div>
-      <img alt='settings' className='settings' src='/settings.svg' onClick={() => props.dispatch(toggleSettings())}/>
+      <img alt='settings' className='settings' src='/icons/settings.svg' onClick={() => props.dispatch(toggleSettings())}/>
     </header>
   )
 }

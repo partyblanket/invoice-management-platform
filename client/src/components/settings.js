@@ -1,9 +1,6 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import { connect } from 'react-redux';
 import { saveSettings } from '../utils/actions';
-
-
-const activeItems = ['name', 'company', 'addressLineOne', 'addressLineTwo', 'postcode', 'city', 'phone','nextSale', 'logo']
 
 const views = {
   general: ['name', 'company', 'addressLineOne', 'addressLineTwo', 'postcode', 'city', 'phone','nextSale'],
@@ -11,20 +8,21 @@ const views = {
 }
 
 const templates = 
-<div className='templates'>
-  <div>
-    <img src='template2.png'></img>
-    <div><input type='radio' /></div>
+  <div className='templates'>
+    <div>
+      <img src='/icons/template2.png' />
+      <div>
+        <input type='radio' />
+      </div>
+    </div>
+    <div>
+      <img src='/icons/simple-template.png' />
+      <div>
+        <input type='radio' />
+      </div>
+    </div>
   </div>
-  <div>
-  <img src='simple-template.png'></img>
-  <div><input type='radio' /></div>
-
-</div>
-</div>
-  ;
-
-
+  
 const settingsItems = {
   name: {title: 'Name', type: 'string'},
   company: {title: 'Company', type:'string'},
@@ -46,10 +44,6 @@ function Settings(props) {
   }
 
   const [view, setView] = useState('general')
-
-  // useEffect(() => {
-  //   setLocalSettings()
-  // }, [])
 
   return (
     <>
@@ -84,7 +78,6 @@ function mapStateToProps(state) {
     vat: state.vat,
     nextSale: state.nextSale,
     logo: state.logo,
-    
   };
 };
 

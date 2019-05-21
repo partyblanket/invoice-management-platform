@@ -114,7 +114,7 @@ function Sale(props) {
 
     return (
       <div className='line' key={index}>
-        <img alt='remove line' src='/minus.svg' style={{ height: '1.5rem' }} onClick={() => changeLine(index)}></img>
+        <img alt='remove line' src='/icons/minus.svg' style={{ height: '1.5rem' }} onClick={() => changeLine(index)}></img>
         <input type='number' name='amount' value={el.amount} onChange={(e) => changeHandler(e, index)} />
         <input type='text' name='sku' value={el.sku} onChange={(e) => changeHandler(e, index)} />
         <input type='number' name='price' value={el.price} onChange={(e) => changeHandler(e, index)} />
@@ -132,7 +132,7 @@ function Sale(props) {
         <div>
           <div id='save' className='button' onClick={(e) => props.dispatch(postInvoice(props._id, dets, props.currentSale))}>SAVE</div>
           <div className='print button' onClick={(e) => props.dispatch(printInvoice(props._id, dets, props.currentSale))}>Print</div>
-          <div className='template button' onClick={(e) => props.dispatch(printInvoice(props._id, dets, props.currentSale))}><img alt='template' src='/email.svg' />
+          <div className='template button' onClick={(e) => props.dispatch(printInvoice(props._id, dets, props.currentSale))}><img alt='template' src='/icons/email.svg' />
             {/* <div className='dropdown'>
               <div>
                 <img src='/simple-template.png' />
@@ -178,7 +178,7 @@ function Sale(props) {
       </div>
       <div className='items'>
         <div className='line'>
-          <img alt='add line' src='/plus.svg' style={{ height: '1.5rem' }} onClick={() => changeLine()} />
+          <img alt='add line' src='/icons/plus.svg' style={{ height: '1.5rem' }} onClick={() => changeLine()} />
           <div>Amnt.</div>
           <div>SKU</div>
           <div>Unit price</div>
