@@ -1,66 +1,79 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
+import useForm from 'react-hook-form'
+
 import { connect } from 'react-redux';
 import { saveSettings } from '../utils/actions';
 
-const views = {
-  general: ['name', 'company', 'addressLineOne', 'addressLineTwo', 'postcode', 'city', 'phone','nextSale'],
-  templates: ['logo']
+//https://react-hook-form.now.sh/api
+function SettingsForm({props}) {
+  const { register, handleSubmit, watch, errors } = useForm({
+    mode: 'onBlur',
+    defaultValues: 
+      {...props}
+  })
+
+  const onSubmit = data => { 
+    props.dispatch(saveSettings(props.userid, data)) 
+  };
+  
+  return (
+    <form id='items' onSubmit={handleSubmit(onSubmit)}>
+      <div>Name</div><input type="text" name="name" ref={register} />
+      <div>Company</div><input type="text" name="company" ref={register({ required: 'field required' })} />
+      {errors.company && <span>{errors.company.message}</span>}
+      <div>Address Line One</div><input type="text" name="addressLineOne" ref={register({ required: 'field required' })} />
+      {errors.addressLineOne && <span>{errors.addressLineOne.message}</span>}
+      <div>Address Line Two</div><input type="text" name="addressLineTwo" ref={register} />
+      {errors.addressLineTwo && <span>{errors.addressLineTwo.message}</span>}
+      <div>Postcode</div><input type="text" name="postcode" ref={register({ required: 'field required' })} />
+      {errors.postcode && <span>{errors.postcode.message}</span>}
+      <div>City</div><input type="text" name="city" ref={register({ required: 'field required' })} />
+      {errors.city && <span>{errors.city.message}</span>}
+      <div>Phone</div><input type="text" name="phone" ref={register({ required: 'field required' })} />
+      {errors.phone && <span>{errors.phone.message}</span>}
+      <div>Next Sale #</div><input type="number" name="nextSale" ref={register({ required: 'field required' })} />
+      {errors.nextSale && <span>{errors.nextSale.message}</span>}
+      <div>Logo url</div><input type="text" name="logo" ref={register} />
+      {errors.logo && <span>{errors.logo.message}</span>}
+      <input type="submit" value='Submit'/>
+    </form>
+  )
 }
 
-const templates = 
+// const views = {
+//   general: ['name', 'company', 'addressLineOne', 'addressLineTwo', 'postcode', 'city', 'phone', 'nextSale'],
+//   templates: ['logo']
+// }
+
+const templates =
   <div className='templates'>
     <div>
-      <img src='/icons/template2.png' />
+      <img alt='basic template' src='/icons/template2.png'></img>
       <div>
         <input type='radio' />
       </div>
     </div>
     <div>
-      <img src='/icons/simple-template.png' />
+      <img alt='simple template' src='/icons/simple-template.png'></img>
       <div>
         <input type='radio' />
       </div>
     </div>
   </div>
-  
-const settingsItems = {
-  name: {title: 'Name', type: 'string'},
-  company: {title: 'Company', type:'string'},
-  addressLineOne: {title: 'Address Line 1', type:'string'},
-  addressLineTwo: {title: 'Address Line 2', type:'string'},
-  postcode: {title: 'Postcode', type:'string'},
-  city: {title: 'City', type:'string'},
-  phone: {title: 'Phone Number', type:'string'},
-  vat: {title: 'VAT rates', type:'arrayOfString'},
-  nextSale: {title: 'Next invoice #', type: 'number'},
-  logo: {title: 'Logo (URL)', type: 'string'},
-}
 
 function Settings(props) {
-  const [localSettings, setLocalSettings] = useState({name: props.name, addressLineOne: props.addressLineOne, addressLineTwo: props.addressLineTwo, postcode: props.postcode, city: props.city, phone: props.phone, company: props.company, vat: props.vat, nextSale: props.nextSale})
-
-  const handleChange = (e) => {
-    setLocalSettings({...localSettings, [e.target.name]: e.target.value}); 
-  }
-
   const [view, setView] = useState('general')
-
+  
   return (
     <>
-    <div id='settings'>
-      <div id='category'>
-        <div className='button' onClick={() => setView('general')}>General</div>
-        <div className='button' onClick={() => setView('templates')}>Templates</div>
+      <div id='settings'>
+        <div id='category'>
+          <div className='button' onClick={() => setView('general')}>General</div>
+          <div className='button' onClick={() => setView('templates')}>Templates</div>
+        </div>
+          <SettingsForm props={props}/>
       </div>
-      <div id='items'>
-        {views[view].map(el => (<div key={el}>
-          <div>{settingsItems[el].title}</div><input type='text' name={el} value={localSettings[el] || ''} onChange={handleChange}></input>
-        </div>))}
-        <div className='button save' onClick={() => props.dispatch(saveSettings(props.userid, localSettings))}>SAVE</div>
-      </div>
-      
-    </div>
-    {view === 'templates' && templates}
+      {view === 'templates' && templates}
     </>
   )
 }

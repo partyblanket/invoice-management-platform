@@ -294,13 +294,43 @@ input[type="number"] {
     grid-template-columns: 1fr 3fr;
     margin: auto;
     padding-top: 2rem;
-    max-width: 40rem;
+    max-width: 50rem;
   }
 
   #settings #items {
     display: grid;
     grid-template-columns: 1fr 2fr;
 
+  }
+
+  #settings #items div {
+    text-align: right;
+    margin: auto;
+    margin-right: auto;
+    margin-right: 1rem;
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  #settings #items input {
+    height: 1rem;
+    margin: auto;
+    margin-left: auto;
+    margin-left: 0;
+    width: 15rem;
+  }
+
+  #settings #items input[type='submit'] {
+    height: 2rem;
+    grid-column: span 2;
+    margin: auto;
+    width: 9rem;
+  }
+
+  #settings #items span {
+    grid-column: span 2;
+    margin: auto;
+    color: red;
   }
 
   #settings #category div {

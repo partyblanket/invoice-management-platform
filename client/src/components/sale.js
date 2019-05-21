@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux';
 import { postInvoice, getInvoice, printInvoice } from '../utils/actions';
 
-let counter = 0
-
 function Sale(props) {
 
   const invoiceDefault = {
     amount: 1,
     sku: '',
-    price: '1',
+    price: '',
     description: '',
     vat: '20'
   }
@@ -94,7 +92,6 @@ function Sale(props) {
   useEffect(() => {
     if (props.currentSale === null) return setDets(detsDefault)
     props.dispatch(getInvoice(props._id, props.currentSale))
-    console.log(++counter)
   }, [props.currentSale])
 
   useEffect(() => {
@@ -133,13 +130,7 @@ function Sale(props) {
           <div id='save' className='button' onClick={(e) => props.dispatch(postInvoice(props._id, dets, props.currentSale))}>SAVE</div>
           <div className='print button' onClick={(e) => props.dispatch(printInvoice(props._id, dets, props.currentSale))}>Print</div>
           <div className='template button' onClick={(e) => props.dispatch(printInvoice(props._id, dets, props.currentSale))}><img alt='template' src='/icons/email.svg' />
-            {/* <div className='dropdown'>
-              <div>
-                <img src='/simple-template.png' />
-              </div>
-            </div> */}
           </div>
-
         </div>
       </div>
       <div className='client-and-settings-container'>
@@ -155,7 +146,6 @@ function Sale(props) {
 
         </div>
         <div className='col2'>
-        
           <p>Shipping</p><div style={{ display: 'flex', justifySelf: 'left', marginLeft: '2rem' }}><input type='radio' checked={shippingRadio} onChange={copyBilling} /><p>same as billing</p></div>
           <p>Company</p><input type='text' name='shippingCompany' onChange={e => changeHandler(e)} value={dets.shippingCompany} />
           <p>Name</p><input type='text' name='shippingName' onChange={e => changeHandler(e)} value={dets.shippingName} />
@@ -197,18 +187,12 @@ function Sale(props) {
             <p className='vat'>Total VAT:</p><p className='vatamnt'>{dets.currency} {invoiceTotals.vat.toFixed(2)}</p>
             <p className='incvat'>Total inv. VAT:</p><p className='incvatamnt'>{dets.currency} {invoiceTotals.inc.toFixed(2)}</p>
           </div>
-
-
-
         </div>
         <div className='note'>
           <div>Note:</div>
           <textarea name='privateNote' value={dets.privateNote} rows="5" cols="80" onChange={e => changeHandler(e)} />
         </div>
       </div>
-
-
-
     </div>
   )
 }
