@@ -6,7 +6,7 @@ import { saveSettings } from '../utils/actions';
 
 //https://react-hook-form.now.sh/api
 function SettingsForm({props}) {
-  const { register, handleSubmit, watch, errors } = useForm({
+  const { register, handleSubmit, errors } = useForm({
     mode: 'onBlur',
     defaultValues: 
       {...props}
