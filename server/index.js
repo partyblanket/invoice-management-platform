@@ -3,7 +3,7 @@ const compression = require('compression');
 const cookieSession = require('cookie-session')
 const bodyParser = require('body-parser');
 const csurf = require('csurf');
-const bcrypt = require('bcryptjs')
+// const bcrypt = require('bcryptjs')
 const fs = require('fs')
 const pdf = require('html-pdf');
 const path = require('path')
@@ -13,9 +13,9 @@ const app = express();
 const server = require('http').Server(app);
 const saveToPdf = require('./handlepdf')
 
-const {MongoClient, ObjectID} = require('mongodb')
+// const {MongoClient, ObjectID} = require('mongodb')
 
-const connectionURL = 'mongodb://127.0.0.1:27017'
+// const connectionURL = 'mongodb://127.0.0.1:27017'
 
 
 

@@ -127,7 +127,7 @@ function Sale(props) {
       <div className='head'>
         <p>Invoice # 1234</p>
         <div>
-          <div id='save' className='button' onClick={(e) => props.dispatch(postInvoice(props._id, dets, props.currentSale))}>SAVE</div>
+          <div id='save' className='button' onClick={(e) => props.dispatch(postInvoice(props._id, dets, props.currentSale, props.nextSale))}>SAVE</div>
           <div className='print button' onClick={(e) => props.dispatch(printInvoice(props._id, dets, props.currentSale))}>Print</div>
           <div className='template button' onClick={(e) => props.dispatch(printInvoice(props._id, dets, props.currentSale))}><img alt='template' src='/icons/email.svg' />
           </div>
@@ -203,7 +203,8 @@ function mapStateToProps(state) {
     salesIdArray: state.salesIdArray,
     currentSale: state.currentSale || null,
     sales: state.sales || {},
-    _id: state._id
+    _id: state._id,
+    nextSale: state.nextSale,
   };
 };
 

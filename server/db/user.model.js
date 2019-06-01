@@ -21,7 +21,8 @@ let User = new Schema({
     type: String,
   },
   salesIdArray: {
-    type: [Number]
+    type: [Schema.Types.ObjectId],
+    default: []
   },
   company: {
     type: String,
@@ -43,6 +44,7 @@ let User = new Schema({
   },
   nextSale: {
     type: Number,
+    default: 1000,
   },
   logo: {
     type: String,

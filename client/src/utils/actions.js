@@ -8,8 +8,8 @@ import { saveAs } from 'file-saver';
 
 // axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
 
-export async function postInvoice(userid, invoiceDets, invoiceid = null) {
-    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets, invoiceid})
+export async function postInvoice(userid, invoiceDets, invoiceid = null, nextSale) {
+    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets, invoiceid, nextSale})
     const {insertedId, ...rest} = data
     
     return {
@@ -31,11 +31,14 @@ export async function getInvoice(userid, invoiceid) {
 
 export async function register(email, password, company) {
     const { data } = await axios.post('/api/register',{ email, password, company})    
+    console.log(data);
+    
     return {
         type: 'LOGIN',
-        _id: data.insertedId,
-        email: data.ops[0].email,
+        _id: data.id,
+        email: data.email,
         error: null,
+        nextSale: data.nextSale
     };
 }
 
