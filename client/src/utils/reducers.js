@@ -17,12 +17,17 @@ export default function(state = {}, action) {
     }
   }
   
-  if (action.type === 'LOGIN') {
+  if (action.type === 'LOGIN' || action.type === 'REGISTER') {
     const currentSale = action.salesIdArray ? action.salesIdArray[0] : null
     state = {
       ...state,
-      ...action,
-      currentSale
+      userid: action.userid,
+      email: action.email,
+      company: action.company,
+      currentSale,
+      nextSale: action.nextSale,
+      salesIdArray: action.salesIdArray,
+      error: action.error,
     }; 
   }
 

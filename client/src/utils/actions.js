@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { saveAs } from 'file-saver';
+import { bindActionCreators } from 'redux';
 
 // axios.create({
 //   xsrfCookieName: 'mytoken',
@@ -8,14 +9,14 @@ import { saveAs } from 'file-saver';
 
 // axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
 
-export async function postInvoice(userid, invoiceDets, invoiceid = null) {
-    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets, invoiceid})
-    const {insertedId, ...rest} = data
+export async function postInvoice(userid, invoiceDets, invoiceid = null, nextSale) {
+    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets, invoiceid, nextSale})
+    const {_id, ...rest} = data
     
     return {
         type: 'SALEDETS',
         rest,
-        insertedId,
+        insertedId: _id,
     };
 }
 
@@ -31,11 +32,16 @@ export async function getInvoice(userid, invoiceid) {
 
 export async function register(email, password, company) {
     const { data } = await axios.post('/api/register',{ email, password, company})    
+    console.log(data);
+    
     return {
-        type: 'LOGIN',
-        _id: data.insertedId,
-        email: data.ops[0].email,
+        type: 'REGISTER',
+        userid: data._id,
+        email: data.email,
         error: null,
+        nextSale: data.nextSale,
+        company: data.company,
+        salesIdArray: data.salesIdArray,
     };
 }
 
@@ -43,7 +49,12 @@ export async function login(email, password) {
     const { data } = await axios.post('/api/login',{email, password})
     return {
         type: 'LOGIN',
-        ...data
+        userid: data._id,
+        email: data.email,
+        company: data.company,
+        error: null,
+        nextSale: data.nextSale,
+        salesIdArray: data.salesIdArray,
     };
 }
 

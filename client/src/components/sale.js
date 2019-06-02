@@ -91,7 +91,7 @@ function Sale(props) {
   }
   useEffect(() => {
     if (props.currentSale === null) return setDets(detsDefault)
-    props.dispatch(getInvoice(props._id, props.currentSale))
+    props.dispatch(getInvoice(props.userid, props.currentSale))
   }, [props.currentSale])
 
   useEffect(() => {
@@ -127,9 +127,9 @@ function Sale(props) {
       <div className='head'>
         <p>Invoice # 1234</p>
         <div>
-          <div id='save' className='button' onClick={(e) => props.dispatch(postInvoice(props._id, dets, props.currentSale))}>SAVE</div>
-          <div className='print button' onClick={(e) => props.dispatch(printInvoice(props._id, dets, props.currentSale))}>Print</div>
-          <div className='template button' onClick={(e) => props.dispatch(printInvoice(props._id, dets, props.currentSale))}><img alt='template' src='/icons/email.svg' />
+          <div id='save' className='button' onClick={(e) => props.dispatch(postInvoice(props.userid, dets, props.currentSale, props.nextSale))}>SAVE</div>
+          <div className='print button' onClick={(e) => props.dispatch(printInvoice(props.userid, dets, props.currentSale))}>Print</div>
+          <div className='template button' onClick={(e) => props.dispatch(printInvoice(props.userid, dets, props.currentSale))}><img alt='template' src='/icons/email.svg' />
           </div>
         </div>
       </div>
@@ -203,7 +203,8 @@ function mapStateToProps(state) {
     salesIdArray: state.salesIdArray,
     currentSale: state.currentSale || null,
     sales: state.sales || {},
-    _id: state._id
+    userid: state.userid,
+    nextSale: state.nextSale,
   };
 };
 
