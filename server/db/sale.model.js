@@ -5,7 +5,7 @@ const validator = require('validator');
 const Schema = mongoose.Schema;
 
 let Sale = new Schema({
-  invoiceid: {type: Number, required: true},
+  invoiceid: {type: Number, required: true, unique: true},
   billingCompany: String,
   billingName: String,
   billingPhone: String,

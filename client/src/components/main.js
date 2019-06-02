@@ -8,7 +8,7 @@ import Settings from './settings';
  
 
 function Main(props) {
-  if(!props._id) return <Login/>
+  if(!props.userid) return <Login/>
   if(props.showSettings) return <Settings/>
 
   return (
@@ -21,7 +21,7 @@ function Main(props) {
 
 function mapStateToProps(state) {
   return {
-    _id: state._id,
+    userid: state.userid,
     showSettings: state.showSettings,
   };
 };
