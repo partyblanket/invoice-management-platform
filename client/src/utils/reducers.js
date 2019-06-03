@@ -1,6 +1,6 @@
 export default function(state = {}, action) {
   
-  if (action.type === 'SALEDETS') {
+  if (action.type === 'POST_SALEDETS' || action.type === 'GET_SALEDETS') {
     const updatedInvoices = state.invoices 
       ? {...state.invoices, [action.insertedId]: {...action.rest}} 
       : {[action.insertedId]: {...action.rest}}

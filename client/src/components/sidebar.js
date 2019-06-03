@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { setCurrentSale } from '../utils/actions';
 
 function Sidebar(props) {
-  const salesList = props.salesIdArray.map(el => <p key={el || 'none'} onClick={() => props.dispatch(setCurrentSale(el))}>{el}</p>)
+  const salesList = props.salesIdArray.map(el => <p key={el._id || 'none'} onClick={() => props.dispatch(setCurrentSale(el._id))}>{el.saleid}</p>)
   return (
     <div id='sidebar'>
       <div className={props.showSidebar ? 'menu visible' : 'menu'}>

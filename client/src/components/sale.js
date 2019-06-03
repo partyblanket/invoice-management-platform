@@ -43,6 +43,7 @@ function Sale(props) {
     privateNote: '',
     terms: '',
     incVat: false,
+    invoiceid: 0,
   }
 
   const [shippingRadio, setShippingRadio] = useState(false)
@@ -125,7 +126,7 @@ function Sale(props) {
   return (
     <div className='main'>
       <div className='head'>
-        <p>Invoice # 1234</p>
+        <p>Invoice # {dets.invoiceid}</p>
         <div>
           <div id='save' className='button' onClick={(e) => props.dispatch(postInvoice(props.userid, dets, props.currentSale, props.nextSale))}>SAVE</div>
           <div className='print button' onClick={(e) => props.dispatch(printInvoice(props.userid, dets, props.currentSale))}>Print</div>

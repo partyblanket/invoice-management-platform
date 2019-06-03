@@ -13,7 +13,7 @@ export async function postInvoice(userid, invoiceDets, invoiceid = null, nextSal
     const {_id, ...rest} = data
     
     return {
-        type: 'SALEDETS',
+        type: 'POST_SALEDETS',
         rest,
         insertedId: _id,
     };
@@ -23,7 +23,7 @@ export async function getInvoice(userid, invoiceid) {
     const { data } = await axios.post('/api/getinvoice',{userid, invoiceid})
     const {_id, ...rest} = data
     return {
-        type: 'SALEDETS',
+        type: 'GET_SALEDETS',
         insertedId: _id,
         rest,
     };

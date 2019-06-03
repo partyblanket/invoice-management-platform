@@ -1,13 +1,6 @@
 const routes = require('express').Router({mergeParams: true});
-const compression = require('compression');
-const cookieSession = require('cookie-session')
-const bodyParser = require('body-parser');
-const csurf = require('csurf');
-const fs = require('fs')
-const pdf = require('html-pdf');
 const path = require('path')
 const passport = require('passport');
-
 
 const User = require('./db/user.model');
 const Sale = require('./db/sale.model');
@@ -31,7 +24,6 @@ routes.post('/api/register', async (req,res) => {
     if(err){return console.log(err)};
     console.log("user registered");
     passport.authenticate('local')(req, res, function () {
-      console.log('req.session ',req.session);
       res.json(req.session.passport);
     });
   }) 
@@ -48,7 +40,6 @@ routes.post('/api/updatesettings', async (req,res) => {
 
 routes.post('/api/login', passport.authenticate('local'), (req,res) => {
   const {salesIdArray, username, company, nextSale, _id } = req.user._doc
-  
   res.json({
     passport: req.session.passport, 
     salesIdArray, username, company, nextSale, _id
@@ -56,18 +47,12 @@ routes.post('/api/login', passport.authenticate('local'), (req,res) => {
 })
 
 routes.get('/isloggedin', (req,res) => {
-  console.log("in is logged in", req.session);
   if(req.session.passport){
-    console.log(req);
-    
     const {salesIdArray, username, company, nextSale, _id } = req.user._doc
-  
     res.json({
       passport: req.session.passport, 
       salesIdArray, username, company, nextSale, _id
     })
-    
-    // res.json({...req.session.passport, success: true});
   }
   else {
     res.json({success: false});
@@ -79,13 +64,12 @@ routes.post('/api/saveinvoice', async (req,res) => {
   if(invoiceid){
     Sale.findByIdAndUpdate(invoiceid,invoiceDets,{new: true, useFindAndModify: false},(err, sale) => {
       if(err) return res.json({succes: false})
-      return res.json({success: true})
+      return res.json(sale)
     })
   }
 
   if(!invoiceid){
-    console.log('no userid');
-
+    console.log('no invoiceid');
     new Sale({
       ...invoiceDets,
       invoiceid: nextSale
@@ -93,7 +77,6 @@ routes.post('/api/saveinvoice', async (req,res) => {
     .save((err, sale) => {
       if(err) return res.json({succes: false})
       res.json({sale})
-
       User.findByIdAndUpdate(userid,{$inc: {nextSale: 1}, $push: {salesIdArray: {_id: sale._id, saleid: nextSale}}},{new: true, useFindAndModify: false},(err, user) => {
         if(err) console.log('Error incrementing saleid/pushing salesidArray',err)
         
@@ -106,7 +89,6 @@ routes.post('/api/getinvoice', async (req,res) => {
   const {userid, invoiceid} = req.body
   const sale = await Sale.findById(invoiceid)
   res.json(sale)
-
 })
 
 routes.post('/api/printinvoice', async (req,res) => {
@@ -127,11 +109,7 @@ routes.get('/api/fetchinvoice/:filename', (req,res) => {
     else {
       console.log('Sent:', filename);
     }
-  })
-  
+  })  
 })
 
-
 module.exports = routes;
-
-

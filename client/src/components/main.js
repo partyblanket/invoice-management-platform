@@ -5,8 +5,6 @@ import Sale from './sale';
 import Login from './login';
 import Settings from './settings';
 
- 
-
 function Main(props) {
 
   useEffect(() => {
@@ -22,7 +20,6 @@ function Main(props) {
     </>
   )
 }
-
 
 function mapStateToProps(state) {
   return {
