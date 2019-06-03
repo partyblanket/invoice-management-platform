@@ -6,11 +6,13 @@ const csurf = require('csurf');
 const fs = require('fs')
 const pdf = require('html-pdf');
 const path = require('path')
+const passport = require('passport');
+
 
 const User = require('./db/user.model');
 const Sale = require('./db/sale.model');
 
-const {checkPassword, hashPassword} = require('./bcrypt')
+// const {checkPassword, hashPassword} = require('./bcrypt')
 
 const saveToPdf = require('./handlepdf')
 
@@ -21,18 +23,19 @@ db.once('open', function() {
 })
 
 routes.post('/api/register', async (req,res) => {
-  const { email, password, company } = req.body
-  const hashedPassword = await hashPassword(password)
+  const { username, password, company } = req.body
 
-  new User({
-    email,
-    hashedPassword,
+  let newUser = new User({
+    username,
     company,
   })
-  .save((err, user) => { 
+  User.register(newUser, password,(err, user) => { 
     if(err){return console.log(err)};
     console.log("user registered");
-    res.json(user)
+    passport.authenticate('local')(req, res, function () {
+      console.log('req.session ',req.session);
+      res.json(req.session.passport);
+    });
   }) 
 });
 
@@ -45,21 +48,45 @@ routes.post('/api/updatesettings', async (req,res) => {
 })
 
 
-routes.post('/api/login', async (req,res) => {
-  const { email, password } = req.body
-  const user = await User.findOne({email})
+routes.post('/api/login', passport.authenticate('local'), (req,res) => {
+  const {salesIdArray, username, company, nextSale, _id } = req.user._doc
   
-  if(user === null) return res.json({id: null, email, status: 'not found'})
+  res.json({
+    passport: req.session.passport, 
+    salesIdArray, username, company, nextSale, _id
+  })
 
-  const allowed = await checkPassword(password, user.hashedPassword)
-  if (allowed) {
-      res.json(user)
-  }else{
-      res.json({id: null, email, status: 'not allowed'})
-  }
+  // const { username, password } = req.body
+  // const user = await User.findOne({username})
+  
+  // if(user === null) return res.json({id: null, username, status: 'not found'})
+
+  // const allowed = await checkPassword(password, user.hashedPassword)
+  // if (allowed) {
+  //     res.json(user)
+  // }else{
+  //     res.json({id: null, username, status: 'not allowed'})
+  // }
 })
 
-
+routes.get('/isloggedin', (req,res) => {
+  console.log("in is logged in", req.session);
+  if(req.session.passport){
+    console.log(req);
+    
+    const {salesIdArray, username, company, nextSale, _id } = req.user._doc
+  
+    res.json({
+      passport: req.session.passport, 
+      salesIdArray, username, company, nextSale, _id
+    })
+    
+    // res.json({...req.session.passport, success: true});
+  }
+  else {
+    res.json({success: false});
+  }
+})
 
 routes.post('/api/saveinvoice', async (req,res) => {
   const {invoiceid, invoiceDets, userid, nextSale} = req.body
@@ -81,7 +108,7 @@ routes.post('/api/saveinvoice', async (req,res) => {
       if(err) return res.json({succes: false})
       res.json({sale})
 
-      User.findByIdAndUpdate(userid,{$inc: {nextSale: 1}, $push: {salesIdArray: sale._id}},{new: true, useFindAndModify: false},(err, user) => {
+      User.findByIdAndUpdate(userid,{$inc: {nextSale: 1}, $push: {salesIdArray: {_id: sale._id, saleid: nextSale}}},{new: true, useFindAndModify: false},(err, user) => {
         if(err) console.log('Error incrementing saleid/pushing salesidArray',err)
         
       })

@@ -200,7 +200,7 @@ function Sale(props) {
 function mapStateToProps(state) {
   return {
     sale: state.sale,
-    salesIdArray: state.salesIdArray,
+    salesIdArray: state.salesIdArray || [],
     currentSale: state.currentSale || null,
     sales: state.sales || {},
     userid: state.userid,

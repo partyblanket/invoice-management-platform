@@ -18,11 +18,11 @@ export default function(state = {}, action) {
   }
   
   if (action.type === 'LOGIN' || action.type === 'REGISTER') {
-    const currentSale = action.salesIdArray ? action.salesIdArray[0] : null
+    const currentSale = action.salesIdArray[0] ? action.salesIdArray[0]._id : null
     state = {
       ...state,
       userid: action.userid,
-      email: action.email,
+      username: action.username,
       company: action.company,
       currentSale,
       nextSale: action.nextSale,
@@ -60,7 +60,5 @@ export default function(state = {}, action) {
       currentSale: action.saleid
     }; 
   }
-  
-  
   return state;
 }

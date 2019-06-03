@@ -8,13 +8,13 @@ function Login(props) {
 
     const defaultRegisterDets = {
         company: '',
-        email: '',
+        username: '',
         password: '',
     }
 
     const [registerDets, setRegisterDets] = useState(defaultRegisterDets)
 
-    const [loginDets, setLoginDets] = useState({email: '', password:''})
+    const [loginDets, setLoginDets] = useState({username: '', password:''})
 
     const [regestering, setRegestering] = useState(false)
 
@@ -29,9 +29,9 @@ function Login(props) {
     const submitForm = (e) => {
       e.preventDefault()
       if(e.target.id === 'login-form'){
-        props.dispatch(login(loginDets.email,loginDets.password))
+        props.dispatch(login(loginDets.username,loginDets.password))
       }else if(e.target.id === 'register-form'){
-        props.dispatch(register(registerDets.email, registerDets.password, registerDets.company))
+        props.dispatch(register(registerDets.username, registerDets.password, registerDets.company))
       } 
       
     }
@@ -40,7 +40,7 @@ function Login(props) {
         <div className="login-page">
         <div className="form">
           <form id="login-form" onSubmit={submitForm}>
-            <input name='email' type="email" value={loginDets.email} onChange={handleChange} placeholder="email"/>
+            <input name='username' type="username" value={loginDets.username} onChange={handleChange} placeholder="username"/>
             <input name='password' type="password" value={loginDets.password} onChange={handleChange} placeholder="password"/>
             <button>login</button>
             <p className="message">Not registered? </p><p className='link' onClick={() => {setRegestering(true)}}> Create an account</p>
@@ -54,7 +54,7 @@ function Login(props) {
         <div className="login-page">
         <div className="form">
           <form id="register-form" onSubmit={submitForm}>
-            <input name='email' type="email" value={registerDets.email} onChange={handleChange} placeholder="email"/>
+            <input name='username' type="username" value={registerDets.username} onChange={handleChange} placeholder="username"/>
             <input name='company' type="text" value={registerDets.company} onChange={handleChange} placeholder="company"/>
             <input name='password' type="password" value={registerDets.password} onChange={handleChange} placeholder="password"/>
             <button>register</button>
@@ -72,7 +72,7 @@ function Login(props) {
 function mapStateToProps(state) {
   return {
     userid: state.userid,
-    email: state.email,
+    username: state.username,
     error: state.error
   };
 };

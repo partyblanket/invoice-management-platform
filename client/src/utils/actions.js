@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { saveAs } from 'file-saver';
-import { bindActionCreators } from 'redux';
 
 // axios.create({
 //   xsrfCookieName: 'mytoken',
@@ -30,14 +29,14 @@ export async function getInvoice(userid, invoiceid) {
     };
 }
 
-export async function register(email, password, company) {
-    const { data } = await axios.post('/api/register',{ email, password, company})    
+export async function register(username, password, company) {
+    const { data } = await axios.post('/api/register',{ username, password, company})    
     console.log(data);
     
     return {
         type: 'REGISTER',
         userid: data._id,
-        email: data.email,
+        username: data.username,
         error: null,
         nextSale: data.nextSale,
         company: data.company,
@@ -45,17 +44,37 @@ export async function register(email, password, company) {
     };
 }
 
-export async function login(email, password) {
-    const { data } = await axios.post('/api/login',{email, password})
+export async function login(username, password) {
+    const {data} = await axios.post('/api/login',{username, password})
+    console.log(data);
+    
     return {
         type: 'LOGIN',
         userid: data._id,
-        email: data.email,
+        username: data.username,
         company: data.company,
         error: null,
         nextSale: data.nextSale,
-        salesIdArray: data.salesIdArray,
+        salesIdArray: data.salesIdArray || [],
     };
+}
+
+export async function isLoggedIn() {
+    return axios
+        .get(`/isloggedin`)
+        .then(({ data }) => {
+            return {
+                type: 'LOGIN',
+                userid: data._id,
+                username: data.username,
+                company: data.company,
+                error: null,
+                nextSale: data.nextSale,
+                salesIdArray: data.salesIdArray || [],
+            };
+        })
+        .catch(err => console.log(err));
+
 }
 
 export function toggleSettings() {
@@ -71,8 +90,6 @@ export function toggleSidebar() {
 }
 
 export async function saveSettings(userid, data) {
-    console.log(data);
-    
     const response = await axios.post('/api/updatesettings',{userid, data})
     if(response.data.success) {
         return {
