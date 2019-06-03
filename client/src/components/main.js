@@ -1,6 +1,6 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { connect } from 'react-redux';
-import {  } from '../utils/actions';
+import { isLoggedIn } from '../utils/actions';
 import Sale from './sale';
 import Login from './login';
 import Settings from './settings';
@@ -8,6 +8,11 @@ import Settings from './settings';
  
 
 function Main(props) {
+
+  useEffect(() => {
+    props.dispatch(isLoggedIn());
+  },[])
+
   if(!props.userid) return <Login/>
   if(props.showSettings) return <Settings/>
 

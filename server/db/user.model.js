@@ -1,19 +1,13 @@
-
-const mongoose = require('mongoose');
-// const passportLocalMongoose = require('passport-local-mongoose');
+const passportLocalMongoose = require('passport-local-mongoose');
 const validator = require('validator');
+const mongoose = require('mongoose');
+
 
 const Schema = mongoose.Schema;
 //note: username and password do not need to be in schema to work
 
 let User = new Schema({
 
-  email: {
-    type: String,
-    unique: true,
-    required: true,
-    validate: [validator.isEmail, 'invalid email']
-  },
   name: {
     type: String,
   },
@@ -21,7 +15,7 @@ let User = new Schema({
     type: String,
   },
   salesIdArray: {
-    type: [Schema.Types.ObjectId],
+    type: [{_id: Schema.Types.ObjectId, saleid: Number}],
     default: []
   },
   company: {
@@ -51,6 +45,6 @@ let User = new Schema({
   },
 });
 
-// User.plugin(passportLocalMongoose);
+User.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model('User', User);
