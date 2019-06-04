@@ -24,6 +24,7 @@ routes.post('/api/register', async (req,res) => {
     if(err){return console.log(err)};
     console.log("user registered");
     passport.authenticate('local')(req, res, function () {
+      req.session.userid = user._id
       res.json(req.session.passport);
     });
   }) 
@@ -38,20 +39,26 @@ routes.post('/api/updatesettings', async (req,res) => {
 })
 
 
-routes.post('/api/login', passport.authenticate('local'), (req,res) => {
+routes.post('/api/login', passport.authenticate('local'), async (req,res) => {
   const {salesIdArray, username, company, nextSale, _id } = req.user._doc
+  const saleslist = await Sale.find({owner: _id})
+  req.session.userid = _id
   res.json({
     passport: req.session.passport, 
-    salesIdArray, username, company, nextSale, _id
+    salesIdArray, username, company, nextSale, _id, saleslist
   })
 })
 
-routes.get('/isloggedin', (req,res) => {
+routes.get('/isloggedin', async (req,res) => {
+  // const saleslist = await Sale.find({owner: req.session._id})
   if(req.session.passport){
     const {salesIdArray, username, company, nextSale, _id } = req.user._doc
+    const saleslist = await Sale.find({owner: _id})
+    console.log(saleslist);
+    
     res.json({
-      passport: req.session.passport, 
-      salesIdArray, username, company, nextSale, _id
+      passport: req.session.passport, // iis passport needed here?
+      salesIdArray, username, company, nextSale, _id, saleslist
     })
   }
   else {
@@ -72,6 +79,7 @@ routes.post('/api/saveinvoice', async (req,res) => {
     console.log('no invoiceid');
     new Sale({
       ...invoiceDets,
+      owner: userid,
       invoiceid: nextSale
     })
     .save((err, sale) => {
@@ -83,6 +91,13 @@ routes.post('/api/saveinvoice', async (req,res) => {
       })
     })
   }
+})
+
+routes.get('/api/saleslist', async (req,res) => {
+  console.log(req.session.userid);
+  
+  res.json(sales)
+  
 })
 
 routes.post('/api/getinvoice', async (req,res) => {

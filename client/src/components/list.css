@@ -1,0 +1,15 @@
+.list {
+  width: 50rem;
+  background: white;
+  margin: auto;
+  font-size: 1.5rem;
+
+  
+}
+
+.list-item {
+  height: 2rem;
+  border: lightgrey 1px solid;
+  border-left: none;
+  border-right: none; 
+}

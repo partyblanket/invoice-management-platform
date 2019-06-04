@@ -19,6 +19,7 @@ function Sale(props) {
   }
 
   const detsDefault = {
+    status: 'draft',
     billingCompany: '',
     billingName: '',
     billingPhone: '+49',
@@ -128,7 +129,7 @@ function Sale(props) {
       <div className='head'>
         <p>Invoice # {dets.invoiceid}</p>
         <div>
-          <div id='save' className='button' onClick={(e) => props.dispatch(postInvoice(props.userid, dets, props.currentSale, props.nextSale))}>SAVE</div>
+          <div id='save' className='button' onClick={(e) => props.dispatch(postInvoice(props.userid, dets, props.currentSale, props.nextSale,invoiceTotals))}>SAVE</div>
           <div className='print button' onClick={(e) => props.dispatch(printInvoice(props.userid, dets, props.currentSale))}>Print</div>
           <div className='template button' onClick={(e) => props.dispatch(printInvoice(props.userid, dets, props.currentSale))}><img alt='template' src='/icons/email.svg' />
           </div>
@@ -159,6 +160,7 @@ function Sale(props) {
         </div>
         <div className='col3'>
           <p></p><div></div>
+          <p>Status</p><select name='status' onChange={e => changeHandler(e)} value={dets.status}><option name='draft'>Draft</option><option name='invoiced'>Invoiced</option><option name='paid'>Paid</option></select>
           <p>Shipping Date</p><input type='date' name='shippingDate' onChange={e => changeHandler(e)} value={dets.shippingDate} />
           <p>Invoice Date</p><input type='date' name='invoiceDate' onChange={e => changeHandler(e)} value={dets.invoiceDate}></input>
           <p>Due Date</p><input type='date' name='dueDate' onChange={e => changeHandler(e)} value={dets.dueDate}></input>
@@ -206,6 +208,7 @@ function mapStateToProps(state) {
     sales: state.sales || {},
     userid: state.userid,
     nextSale: state.nextSale,
+    status: state.status,
   };
 };
 

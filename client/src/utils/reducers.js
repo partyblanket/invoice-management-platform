@@ -28,6 +28,7 @@ export default function(state = {}, action) {
       nextSale: action.nextSale,
       salesIdArray: action.salesIdArray,
       error: action.error,
+      salesList: action.salesList || [],
     }; 
   }
 
@@ -60,5 +61,14 @@ export default function(state = {}, action) {
       currentSale: action.saleid
     }; 
   }
+
+  if (action.type === 'GET_SALES_LIST') {
+    console.log(action.sales)
+    state = {
+      ...state,
+      saleslist: action.sales
+    }; 
+  }
+
   return state;
 }
