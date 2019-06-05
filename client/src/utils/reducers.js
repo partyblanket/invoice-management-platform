@@ -1,19 +1,18 @@
 export default function(state = {}, action) {
   
   if (action.type === 'POST_SALEDETS' || action.type === 'GET_SALEDETS') {
-    const updatedInvoices = state.invoices 
-      ? {...state.invoices, [action.insertedId]: {...action.rest}} 
-      : {[action.insertedId]: {...action.rest}}
+    // const updatedInvoices = state.invoices 
+    //   ? {...state.invoices, [action.insertedId]: {...action.rest}} 
+    //   : {[action.insertedId]: {...action.rest}}
 
-    const newSaleIdArray = 
-      state.salesIdArray.indexOf(action.insertedId) === -1
-      ? [...state.salesIdArray, action.insertedId]
-      : [...state.salesIdArray]
+    // const newSaleIdArray = 
+    //   state.salesIdArray.indexOf(action.insertedId) === -1
+    //   ? [...state.salesIdArray, action.insertedId]
+    //   : [...state.salesIdArray]
       
     state = {
       ...state,
-      sales: {...updatedInvoices},
-      salesIdArray: newSaleIdArray
+      salesList: {...state.salesList, [action.insertedId]:{...action.rest}},
     }
   }
   

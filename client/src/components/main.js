@@ -12,15 +12,10 @@ import Header from './header'
 import Sidebar from './sidebar'
 
 function Main(props) {
-
+ 
   useEffect(() => {
     props.dispatch(isLoggedIn());
-    // props.dispatch(getSalesList());
-
   },[])
-
-  // if(!props.userid) return <Login/>
-  // if(props.showSettings) return <Settings/>
 
   return (
     <BrowserRouter>
@@ -29,6 +24,7 @@ function Main(props) {
         <Sidebar />
         <Route exact path='/login' component={Login} />
         <PrivateRoute exact path='/' component={List} />
+        <PrivateRoute exact path='/sale/:id' component={Sale} />
         <PrivateRoute exact path='/list' component={List} />
         <PrivateRoute exact path='/settings' component={Settings} />
         {/* <Route exact path='/template' component={Template} /> */}

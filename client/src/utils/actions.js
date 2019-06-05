@@ -1,13 +1,6 @@
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 
-// axios.create({
-//   xsrfCookieName: 'mytoken',
-//   xsrfHeaderName: 'csrf-token'
-// });
-
-// axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
-
 export async function postInvoice(userid, invoiceDets, invoiceid = null, nextSale, invoiceTotals) {
     const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets: {...invoiceDets, invoiceTotals} , invoiceid, nextSale,invoiceTotals})
     const {_id, ...rest} = data
@@ -62,8 +55,7 @@ export async function login(username, password) {
 
 export async function isLoggedIn() {
     const {data} = await axios.get(`/isloggedin`)
-            console.log(data);
-            
+           
             return {
                 type: 'LOGIN',
                 userid: data._id,
@@ -116,7 +108,7 @@ export async function saveSettings(userid, data) {
     }
 }
 
-export function setCurrentSale(saleid) {
+export async function setCurrentSale(saleid) {
     return {
         type: 'SET_CURRENTSALE',
         saleid

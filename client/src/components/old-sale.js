@@ -5,44 +5,44 @@ import * as DEFAULTS from '../utils/defaults'
 
 function Sale(props) {
 
-  const [dets, setDets] = useState(null)
-  const [shippingRadio, setShippingRadio] = useState(false)
-
   useEffect(() => {
-    const invoiceid = props.match.params.id
+    const invoiceid = props.match.params
     const sale = props.salesList.find(el => el.invoiceid === invoiceid)
     if(sale) {
-      setDets({...sale})
-    }else{
-      setDets({...DEFAULTS.detsDefault})
+      props.dispatch(setCurrentSale(sale._id))
     }
+  }, [])
 
-  }, [props.salesList])
+  // useEffect(() => {
+  //   return () => {
+  //     effect
+  //   };
+  // }, [input])
 
-  if(!dets) return 'loading'
+  useEffect(() => {
+    if (props.currentSale === null) return setDets(DEFAULTS.detsDefault)
+    props.dispatch(getInvoice(props.userid, props.currentSale))
+  }, [props.currentSale])
 
-  const calcInvoiceTotals = () => {
-    const invoiceTotals = {inc: 0,ex: 0,vat: 0 }
-    dets.invoiceLines.forEach(el => {
-      if (dets.incVat) {
-        invoiceTotals.inc += el.amount * el.price
-        invoiceTotals.ex += el.amount * el.price / ((el.vat / 100) + 1)
-        invoiceTotals.vat += (el.amount * el.price / ((el.vat / 100) + 1)) * (el.vat / 100)
-      } else {
-        invoiceTotals.inc += el.amount * el.price * ((el.vat / 100) + 1);
-        invoiceTotals.ex += el.amount * el.price;
-        invoiceTotals.vat += el.amount * el.price * (el.vat / 100);
-      }
-    });
-    
-    return invoiceTotals
+  // useEffect(() => {
+  //   props.sales[props.currentSale] && setDets(props.sales[props.currentSale])
+  // }, [props.sales])
+
+
+  const invoiceTotals = {
+    vat: 0,
+    ex: 0,
+    inc: 0
   }
+
+  const [shippingRadio, setShippingRadio] = useState(false)
+
+  const [dets, setDets] = useState(null)
 
   const changeHandler = (e, index) => {
     if (e.target.parentElement.classList.contains('line') || e.target.parentElement.parentElement.classList.contains('line')) {
       const newState = { ...dets }
       newState.invoiceLines[index][e.target.name] = e.target.value
-      newState.invoiceTotals = {...calcInvoiceTotals()}
       return setDets(newState)
     }
     if (['billingName', 'billingPhone', 'billingAddressLineOne', 'billingAddressLineTwo', 'billingPostcode', 'billingCity', 'shippingName', 'shippingPhone', 'shippingAddressLineOne', 'shippingAddressLineTwo', 'shippingPostcode', 'shippingCity', 'shippingDate'].includes(e.target.name)) {
@@ -50,7 +50,6 @@ function Sale(props) {
     }
     if (e.target.name === 'incVat') {
       const newState = { ...dets, incVat: e.target.checked }
-      newState.invoiceTotals = {...calcInvoiceTotals()}
       return setDets(newState)
     }
     const newState = { ...dets, [e.target.name]: e.target.value }
@@ -81,7 +80,19 @@ function Sale(props) {
     return setDets(newState)
   }
 
-  const invoiceLinesElements = dets.invoiceLines.map((el, index) => {
+  if(!dets) return null
+
+  const invoiceLines = dets.invoiceLines.map((el, index) => {
+    if (dets.incVat) {
+      invoiceTotals.inc += el.amount * el.price
+      invoiceTotals.ex += el.amount * el.price / ((el.vat / 100) + 1)
+      invoiceTotals.vat += (el.amount * el.price / ((el.vat / 100) + 1)) * (el.vat / 100)
+    } else {
+      invoiceTotals.inc += el.amount * el.price * ((el.vat / 100) + 1);
+      invoiceTotals.ex += el.amount * el.price;
+      invoiceTotals.vat += el.amount * el.price * (el.vat / 100);
+    }
+
     return (
       <div className='line' key={index}>
         <img alt='remove line' src='/icons/minus.svg' style={{ height: '1.5rem' }} onClick={() => changeLine(index)}></img>
@@ -93,13 +104,16 @@ function Sale(props) {
         <div>{Number.isNaN(el.amount * el.price) ? '' : el.amount * el.price}</div>
       </div>
     )
-  }) 
+  })
+
+  
+
   return (
-  <div className='main'>
+    <div className='main'>
       <div className='head'>
         <p>Invoice # {dets.invoiceid}</p>
         <div>
-          <div id='save' className='button' onClick={(e) => props.dispatch(postInvoice(props.userid, dets, props.currentSale, props.nextSale))}>SAVE</div>
+          <div id='save' className='button' onClick={(e) => props.dispatch(postInvoice(props.userid, dets, props.currentSale, props.nextSale,invoiceTotals))}>SAVE</div>
           <div className='print button' onClick={(e) => props.dispatch(printInvoice(props.userid, dets, props.currentSale))}>Print</div>
           <div className='template button' onClick={(e) => props.dispatch(printInvoice(props.userid, dets, props.currentSale))}><img alt='template' src='/icons/email.svg' />
           </div>
@@ -149,16 +163,16 @@ function Sale(props) {
           <div>VAT</div>
           <div>Total:</div>
         </div>
-        {invoiceLinesElements}
+        {invoiceLines}
         <div className='note-total'>
           <div className='terms'>
             <div>Terms &amp; Conditions</div>
             <textarea name='terms' rows="5" cols="35" value={dets.terms} onChange={e => changeHandler(e)} />
           </div>
           <div className='total'>
-            <p className='exvat'>Total ex. VAT:</p><p className='exvatamnt'>{dets.currency} {dets.invoiceTotals.ex.toFixed(2)}</p>
-            <p className='vat'>Total VAT:</p><p className='vatamnt'>{dets.currency} {dets.invoiceTotals.vat.toFixed(2)}</p>
-            <p className='incvat'>Total inv. VAT:</p><p className='incvatamnt'>{dets.currency} {dets.invoiceTotals.inc.toFixed(2)}</p>
+            <p className='exvat'>Total ex. VAT:</p><p className='exvatamnt'>{dets.currency} {invoiceTotals.ex.toFixed(2)}</p>
+            <p className='vat'>Total VAT:</p><p className='vatamnt'>{dets.currency} {invoiceTotals.vat.toFixed(2)}</p>
+            <p className='incvat'>Total inv. VAT:</p><p className='incvatamnt'>{dets.currency} {invoiceTotals.inc.toFixed(2)}</p>
           </div>
         </div>
         <div className='note'>
@@ -168,7 +182,6 @@ function Sale(props) {
       </div>
     </div>
   )
-
 }
 
 function mapStateToProps(state) {
