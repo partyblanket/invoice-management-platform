@@ -1,19 +1,18 @@
 export default function(state = {}, action) {
   
   if (action.type === 'POST_SALEDETS' || action.type === 'GET_SALEDETS') {
-    const updatedInvoices = state.invoices 
-      ? {...state.invoices, [action.insertedId]: {...action.rest}} 
-      : {[action.insertedId]: {...action.rest}}
+    // const updatedInvoices = state.invoices 
+    //   ? {...state.invoices, [action.insertedId]: {...action.rest}} 
+    //   : {[action.insertedId]: {...action.rest}}
 
-    const newSaleIdArray = 
-      state.salesIdArray.indexOf(action.insertedId) === -1
-      ? [...state.salesIdArray, action.insertedId]
-      : [...state.salesIdArray]
+    // const newSaleIdArray = 
+    //   state.salesIdArray.indexOf(action.insertedId) === -1
+    //   ? [...state.salesIdArray, action.insertedId]
+    //   : [...state.salesIdArray]
       
     state = {
       ...state,
-      sales: {...updatedInvoices},
-      salesIdArray: newSaleIdArray
+      salesList: {...state.salesList, [action.insertedId]:{...action.rest}},
     }
   }
   
@@ -28,6 +27,7 @@ export default function(state = {}, action) {
       nextSale: action.nextSale,
       salesIdArray: action.salesIdArray,
       error: action.error,
+      salesList: action.salesList || [],
     }; 
   }
 
@@ -60,5 +60,14 @@ export default function(state = {}, action) {
       currentSale: action.saleid
     }; 
   }
+
+  if (action.type === 'GET_SALES_LIST') {
+    console.log(action.sales)
+    state = {
+      ...state,
+      saleslist: action.sales
+    }; 
+  }
+
   return state;
 }

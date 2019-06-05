@@ -5,6 +5,8 @@ const validator = require('validator');
 const Schema = mongoose.Schema;
 
 let Sale = new Schema({
+  status: String,
+  owner: Schema.Types.ObjectId,
   invoiceid: {type: Number, required: true, unique: true},
   billingCompany: String,
   billingName: String,
@@ -36,6 +38,11 @@ let Sale = new Schema({
   privateNote: String,
   terms: String,
   incVat: Boolean,
+  invoiceTotals: {
+    vat: Number,
+    ex: Number,
+    inc: Number
+  }
 });
 
 module.exports = mongoose.model('sale', Sale);

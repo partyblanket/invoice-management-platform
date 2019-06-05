@@ -1,15 +1,8 @@
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 
-// axios.create({
-//   xsrfCookieName: 'mytoken',
-//   xsrfHeaderName: 'csrf-token'
-// });
-
-// axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
-
-export async function postInvoice(userid, invoiceDets, invoiceid = null, nextSale) {
-    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets, invoiceid, nextSale})
+export async function postInvoice(userid, invoiceDets, invoiceid = null, nextSale, invoiceTotals) {
+    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets: {...invoiceDets, invoiceTotals} , invoiceid, nextSale,invoiceTotals})
     const {_id, ...rest} = data
     
     return {
@@ -56,13 +49,13 @@ export async function login(username, password) {
         error: null,
         nextSale: data.nextSale,
         salesIdArray: data.salesIdArray || [],
+        salesList: data.saleslist || [],
     };
 }
 
 export async function isLoggedIn() {
-    return axios
-        .get(`/isloggedin`)
-        .then(({ data }) => {
+    const {data} = await axios.get(`/isloggedin`)
+           
             return {
                 type: 'LOGIN',
                 userid: data._id,
@@ -71,7 +64,21 @@ export async function isLoggedIn() {
                 error: null,
                 nextSale: data.nextSale,
                 salesIdArray: data.salesIdArray || [],
+                salesList: data.saleslist || [],
             };
+
+
+}
+
+export async function getSalesList() {
+    return axios
+        .get(`/api/saleslist`)
+        .then(({ data }) => {
+            return {
+                type: 'GET_SALES_LIST',
+                sales: {...data}
+            }
+            
         })
         .catch(err => console.log(err));
 
@@ -101,7 +108,7 @@ export async function saveSettings(userid, data) {
     }
 }
 
-export function setCurrentSale(saleid) {
+export async function setCurrentSale(saleid) {
     return {
         type: 'SET_CURRENTSALE',
         saleid

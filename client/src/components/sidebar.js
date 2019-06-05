@@ -1,16 +1,18 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { connect } from 'react-redux';
 import { setCurrentSale } from '../utils/actions';
+import { Link } from "react-router-dom";
 
-function Sidebar(props) {
-  const salesList = props.salesIdArray.map(el => <p key={el._id || 'none'} onClick={() => props.dispatch(setCurrentSale(el._id))}>{el.saleid}</p>)
+
+function Sidebar(props) { 
+
+  const salesListItems = props.salesList.map(el => <Link key={el._id || 'none'} to={'/sale/'+el.invoiceid}>{el.invoiceid}</Link>)
   return (
     <div id='sidebar'>
       <div className={props.showSidebar ? 'menu visible' : 'menu'}>
         <b className='title'>invoices</b>
         <b className='new' onClick={() => props.dispatch(setCurrentSale(null))}>NEW</b>
-        {salesList}
-
+        {salesListItems}
       </div>
       <div className='cover'></div>
     </div>
@@ -20,7 +22,7 @@ function Sidebar(props) {
 function mapStateToProps(state) {
   return {
     showSidebar: state.showSidebar,
-    salesIdArray: state.salesIdArray || [],
+    salesList: state.salesList || [],
   };
 };
 

@@ -1,10 +1,20 @@
 import React, {useState} from 'react'
 import './login.css'
 // import { log } from 'util';
+import { Redirect } from "react-router-dom";
+
 import { connect } from 'react-redux';
 import { register, login } from '../utils/actions';
 
 function Login(props) {
+
+  const { from } = props.location.state || {
+        from: { pathname: "/" },
+    };
+
+    if (props.username) {
+        return <Redirect to={from} />;
+    }
 
     const defaultRegisterDets = {
         company: '',

@@ -1,0 +1,16 @@
+.list-item {
+  background: white;
+  font-size: 1.4rem;
+  display: grid;
+  grid-template-columns: 5rem 10rem 10rem 15rem 10rem 10rem;
+  justify-content: center;
+}
+
+.list-item > * {
+  height: 2rem;
+  border: lightgrey 1px solid;
+  border-left: none;
+  border-right: none; 
+  margin: 0;
+  padding: .2rem;
+}
