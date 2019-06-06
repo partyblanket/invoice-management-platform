@@ -2,10 +2,19 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux';
 import { postInvoice, printInvoice, setCurrentSale } from '../utils/actions';
 import * as DEFAULTS from '../utils/defaults'
+import useForm from 'react-hook-form'
+
 
 function Sale(props) {
   const [dets, setDets] = useState(null)
   const [shippingRadio, setShippingRadio] = useState(false)
+
+  const { register, handleSubmit, errors } = useForm({
+    mode: 'onBlur',
+    defaultValues: 
+      {...dets}
+  })
+
 
   useEffect(() => {
     const invoiceid = props.match.params.id
@@ -94,50 +103,59 @@ function Sale(props) {
       </div>
     )
   }) 
+
+  const onSubmit = data => { 
+    props.dispatch(postInvoice(props.userid, data, props.currentSale, props.nextSale))
+  };
+
+  const errorText = Object.keys(errors).map(key => <p key={'err'+key}>{key}: {errors[key].message}</p>)
+
   return (
   <div className='main'>
       {props.error && <div className='error'>{props.error}</div>}
+      {errorText}
       <div className='head'>
         
         <p>Invoice # {dets.invoiceid}</p>
         <div>
-          <div id='save' className='button' onClick={(e) => props.dispatch(postInvoice(props.userid, dets, props.currentSale, props.nextSale))}>SAVE</div>
+          <input type='submit' value='SAVE' form='saleForm' id='save' className='button' />
           <div className='print button' onClick={(e) => props.dispatch(printInvoice(props.userid, dets, props.currentSale))}>Print</div>
           <div className='template button' onClick={(e) => props.dispatch(printInvoice(props.userid, dets, props.currentSale))}><img alt='template' src='/icons/email.svg' />
           </div>
         </div>
       </div>
+      <form id='saleForm' onSubmit={handleSubmit(onSubmit)}>
       <div className='client-and-settings-container'>
         <div className='col1'>
           <p>Billing</p><p />
-          <p>Company</p><input type='text' name='billingCompany' onChange={e => changeHandler(e)} value={dets.billingCompany} />
-          <p>Name</p><input type='text' name='billingName' onChange={e => changeHandler(e)} value={dets.billingName} />
-          <p>Phone</p><input type='text' name='billingPhone' onChange={e => changeHandler(e)} value={dets.billingPhone}></input>
-          <p>Address Line 1</p><input type='text' name='billingAddressLineOne' onChange={e => changeHandler(e)} value={dets.billingAddressLineOne}></input>
-          <p>Address Line 2</p><input type='text' name='billingAddressLineTwo' onChange={e => changeHandler(e)} value={dets.billingAddressLineTwo}></input>
-          <p>Postcode</p><input type='text' name='billingPostcode' onChange={e => changeHandler(e)} value={dets.billingPostcode}></input>
-          <p>City</p><input type='text' name='billingCity' onChange={e => changeHandler(e)} value={dets.billingCity}></input>
+          <p>Company</p><input type='text' name='billingCompany' ref={register({ required: 'field required' })}/>
+          <p>Name</p><input type='text' name='billingName' ref={register({ required: 'field required' })} />
+          <p>Phone</p><input type='text' name='billingPhone' ref={register({ required: 'field required' })}></input>
+          <p>Address Line 1</p><input type='text' name='billingAddressLineOne' ref={register({ required: 'field required' })}></input>
+          <p>Address Line 2</p><input type='text' name='billingAddressLineTwo' ref={register}></input>
+          <p>Postcode</p><input type='text' name='billingPostcode' ref={register}></input>
+          <p>City</p><input type='text' name='billingCity' ref={register({ required: 'field required' })}></input>
 
         </div>
         <div className='col2'>
           <p>Shipping</p><div style={{ display: 'flex', justifySelf: 'left', marginLeft: '2rem' }}><input type='radio' checked={shippingRadio} onChange={copyBilling} /><p>same as billing</p></div>
-          <p>Company</p><input type='text' name='shippingCompany' onChange={e => changeHandler(e)} value={dets.shippingCompany} />
-          <p>Name</p><input type='text' name='shippingName' onChange={e => changeHandler(e)} value={dets.shippingName} />
-          <p>Phone</p><input type='text' name='shippingPhone' onChange={e => changeHandler(e)} value={dets.shippingPhone}></input>
-          <p>Address Line 1</p><input type='text' name='shippingAddressLineOne' onChange={e => changeHandler(e)} value={dets.shippingAddressLineOne}></input>
-          <p>Address Line 2</p><input type='text' name='shippingAddressLineTwo' onChange={e => changeHandler(e)} value={dets.shippingAddressLineTwo}></input>
-          <p>Postcode</p><input type='text' name='shippingPostcode' onChange={e => changeHandler(e)} value={dets.shippingPostcode}></input>
-          <p>City</p><input type='text' name='shippingCity' onChange={e => changeHandler(e)} value={dets.shippingCity}></input>
+          <p>Company</p><input type='text' name='shippingCompany' ref={register} />
+          <p>Name</p><input type='text' name='shippingName' ref={register} />
+          <p>Phone</p><input type='text' name='shippingPhone' ref={register}></input>
+          <p>Address Line 1</p><input type='text' name='shippingAddressLineOne' ref={register}></input>
+          <p>Address Line 2</p><input type='text' name='shippingAddressLineTwo' ref={register}></input>
+          <p>Postcode</p><input type='text' name='shippingPostcode' ref={register}></input>
+          <p>City</p><input type='text' name='shippingCity' ref={register}></input>
 
         </div>
         <div className='col3'>
           <p></p><div></div>
-          <p>Status</p><select name='status' onChange={e => changeHandler(e)} value={dets.status}><option name='draft'>Draft</option><option name='invoiced'>Invoiced</option><option name='paid'>Paid</option></select>
-          <p>Shipping Date</p><input type='date' name='shippingDate' onChange={e => changeHandler(e)} value={dets.shippingDate} />
-          <p>Invoice Date</p><input type='date' name='invoiceDate' onChange={e => changeHandler(e)} value={dets.invoiceDate}></input>
-          <p>Due Date</p><input type='date' name='dueDate' onChange={e => changeHandler(e)} value={dets.dueDate}></input>
-          <p>Currency</p><input type='text' name='currency' onChange={e => changeHandler(e)} value={dets.currency}></input>
-          <p>Including VAT</p><input type='checkbox' checked={dets.incVat} name='incVat' onChange={e => changeHandler(e)}></input>
+          <p>Status</p><select name='status' ref={register({ required: 'field required' })}><option name='draft'>Draft</option><option name='invoiced'>Invoiced</option><option name='paid'>Paid</option></select>
+          <p>Shipping Date</p><input type='date' name='shippingDate' ref={register({ required: 'field required' })} />
+          <p>Invoice Date</p><input type='date' name='invoiceDate' ref={register({ required: 'field required' })}></input>
+          <p>Due Date</p><input type='date' name='dueDate' ref={register({ required: 'field required' })}></input>
+          <p>Currency</p><input type='text' name='currency' ref={register({ required: 'field required' })}></input>
+          <p>Including VAT</p><input type='checkbox' name='incVat' ref={register}></input>
 
         </div>
       </div>
@@ -168,6 +186,7 @@ function Sale(props) {
           <textarea name='privateNote' value={dets.privateNote} rows="5" cols="80" onChange={e => changeHandler(e)} />
         </div>
       </div>
+      </form>
     </div>
   )
 }
