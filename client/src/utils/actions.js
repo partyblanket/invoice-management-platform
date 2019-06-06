@@ -3,12 +3,16 @@ import { saveAs } from 'file-saver';
 
 export async function postInvoice(userid, invoiceDets, invoiceid = null, nextSale, invoiceTotals) {
     const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets: {...invoiceDets, invoiceTotals} , invoiceid, nextSale,invoiceTotals})
-    const {_id, ...rest} = data
+    console.log(data);
+    if(!data._id) {return {
+        type: 'ERROR',
+        error: 'failed saving sales details'
+    }}
     
     return {
         type: 'POST_SALEDETS',
-        rest,
-        insertedId: _id,
+        data,
+        insertedId: data._id,
     };
 }
 
@@ -39,7 +43,7 @@ export async function register(username, password, company) {
 
 export async function login(username, password) {
     const {data} = await axios.post('/api/login',{username, password})
-    console.log(data);
+    // console.log(data);
     
     return {
         type: 'LOGIN',
@@ -48,7 +52,6 @@ export async function login(username, password) {
         company: data.company,
         error: null,
         nextSale: data.nextSale,
-        salesIdArray: data.salesIdArray || [],
         salesList: data.saleslist || [],
     };
 }
@@ -109,6 +112,7 @@ export async function saveSettings(userid, data) {
 }
 
 export async function setCurrentSale(saleid) {
+    //get id
     return {
         type: 'SET_CURRENTSALE',
         saleid

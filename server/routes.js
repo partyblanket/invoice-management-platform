@@ -32,6 +32,8 @@ routes.post('/api/register', async (req,res) => {
 
 routes.post('/api/updatesettings', async (req,res) => {
   const { userid, data } = req.body
+  console.log(req.body);
+  
   User.findByIdAndUpdate(userid,data,{new: true, useFindAndModify: false},(err, user) => {
     if(err) return res.json({succes: false})
     return res.json({success: true})
@@ -54,8 +56,6 @@ routes.get('/isloggedin', async (req,res) => {
   if(req.session.passport){
     const {salesIdArray, username, company, nextSale, _id } = req.user._doc
     const saleslist = await Sale.find({owner: _id})
-    console.log(saleslist);
-    
     res.json({
       passport: req.session.passport, // iis passport needed here?
       salesIdArray, username, company, nextSale, _id, saleslist

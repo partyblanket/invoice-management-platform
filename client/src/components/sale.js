@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux';
-import { postInvoice, getInvoice, printInvoice, setCurrentSale } from '../utils/actions';
+import { postInvoice, printInvoice, setCurrentSale } from '../utils/actions';
 import * as DEFAULTS from '../utils/defaults'
 
 function Sale(props) {
-
   const [dets, setDets] = useState(null)
   const [shippingRadio, setShippingRadio] = useState(false)
 
   useEffect(() => {
     const invoiceid = props.match.params.id
-    const sale = props.salesList.find(el => el.invoiceid === invoiceid)
+    const sale = props.salesList.find(el => el.invoiceid == invoiceid)
     if(sale) {
+      props.dispatch(setCurrentSale(sale._id))
       setDets({...sale})
     }else{
+      props.dispatch(setCurrentSale(null))
       setDets({...DEFAULTS.detsDefault})
     }
-
-  }, [props.salesList])
+  }, [props.salesList,props.match.params.id])
 
   if(!dets) return 'loading'
 
@@ -96,7 +96,9 @@ function Sale(props) {
   }) 
   return (
   <div className='main'>
+      {props.error && <div className='error'>{props.error}</div>}
       <div className='head'>
+        
         <p>Invoice # {dets.invoiceid}</p>
         <div>
           <div id='save' className='button' onClick={(e) => props.dispatch(postInvoice(props.userid, dets, props.currentSale, props.nextSale))}>SAVE</div>
@@ -168,7 +170,6 @@ function Sale(props) {
       </div>
     </div>
   )
-
 }
 
 function mapStateToProps(state) {
@@ -180,6 +181,7 @@ function mapStateToProps(state) {
     nextSale: state.nextSale,
     status: state.status,
     salesList: state.salesList || [],
+    error: state.error,
   };
 };
 
