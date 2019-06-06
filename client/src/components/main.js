@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 import { connect } from 'react-redux';
-import { isLoggedIn, getSalesList } from '../utils/actions';
+import { isLoggedIn } from '../utils/actions';
 import { BrowserRouter, Route } from "react-router-dom";
 
 import Sale from './sale';

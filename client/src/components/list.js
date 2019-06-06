@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { connect } from 'react-redux';
-import { setCurrentSale } from '../utils/actions';
 import { Link } from "react-router-dom";
 
 import './list.css'
 
-
-
 function List(props) {
-
   const items = props.salesList.map(el => {
     return (
     <Link to={'/sale/'+el.invoiceid} className='list-item' key={el._id}>
@@ -23,7 +19,6 @@ function List(props) {
   })
 
   return (
-    
       <>
         <div className='list-item'>
           <p>#</p>
@@ -34,14 +29,9 @@ function List(props) {
           <p>Status</p>
         </div>
         {items}
-      </>
-    
+      </> 
   )
 }
-
-
-
-
 
 function mapStateToProps(state) {
   return {

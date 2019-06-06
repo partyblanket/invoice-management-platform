@@ -80,7 +80,7 @@ function Settings(props) {
 
 function mapStateToProps(state) {
   return {
-    userid: state._id,
+    userid: state.userid,
     name: state.name,
     company: state.company,
     addressLineOne: state.addressLineOne,

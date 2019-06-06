@@ -1,11 +1,10 @@
-import React, {useState} from 'react'
+import React from 'react'
 import { connect } from 'react-redux';
 import { setCurrentSale } from '../utils/actions';
 import { Link } from "react-router-dom";
 
 
 function Sidebar(props) { 
-
   const salesListItems = props.salesList.map(el => <Link key={el._id || 'none'} to={'/sale/'+el.invoiceid}>{el.invoiceid}</Link>)
   return (
     <div id='sidebar'>

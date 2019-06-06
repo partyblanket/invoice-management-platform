@@ -1,31 +1,23 @@
 export default function(state = {}, action) {
   
   if (action.type === 'POST_SALEDETS' || action.type === 'GET_SALEDETS') {
-    // const updatedInvoices = state.invoices 
-    //   ? {...state.invoices, [action.insertedId]: {...action.rest}} 
-    //   : {[action.insertedId]: {...action.rest}}
-
-    // const newSaleIdArray = 
-    //   state.salesIdArray.indexOf(action.insertedId) === -1
-    //   ? [...state.salesIdArray, action.insertedId]
-    //   : [...state.salesIdArray]
-      
+    const arrayIndexToReplace = state.salesList.findIndex(el => el._id === action.insertedId)
+    const newSalesList = [...state.salesList]
+    newSalesList[arrayIndexToReplace] = action.data
     state = {
       ...state,
-      salesList: {...state.salesList, [action.insertedId]:{...action.rest}},
+      salesList: newSalesList
     }
   }
   
   if (action.type === 'LOGIN' || action.type === 'REGISTER') {
-    const currentSale = action.salesIdArray[0] ? action.salesIdArray[0]._id : null
     state = {
       ...state,
       userid: action.userid,
       username: action.username,
       company: action.company,
-      currentSale,
+      currentSale: null,
       nextSale: action.nextSale,
-      salesIdArray: action.salesIdArray,
       error: action.error,
       salesList: action.salesList || [],
     }; 
@@ -35,6 +27,13 @@ export default function(state = {}, action) {
     state = {
       ...state,
       ...action
+    }; 
+  }
+
+  if (action.type === 'ERROR') {
+    state = {
+      ...state,
+      error: action.error
     }; 
   }
 

@@ -66,11 +66,15 @@ header .edit {
   transition: transform 1s;
 }
 
-#sidebar .menu p{
+#sidebar .menu a{
   cursor: pointer;
-
-
+  display: block;
+  margin: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
+
+
 
 #sidebar .menu b.new {
   padding: .4rem;
@@ -375,4 +379,12 @@ input[type="number"] {
   margin: 1rem;
   width: 100%;
   text-align: center;
+}
+
+.error {
+  margin: auto;
+  color: red;
+  font-size: 1.1rem;
+  font-family: serif;
+  padding: 1rem;
 }
