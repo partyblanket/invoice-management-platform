@@ -11,20 +11,35 @@ function Sale(props) {
 
   const { register, handleSubmit, errors } = useForm({
     mode: 'onBlur',
-    defaultValues: 
-      {...dets}
+    defaultValues: {...dets},
   })
 
 
   useEffect(() => {
     const invoiceid = props.match.params.id
-    const sale = props.salesList.find(el => el.invoiceid == invoiceid)
+    let sale = props.salesList.find(el => el.invoiceid == invoiceid)
     if(sale) {
+      sale.invoiceLines.forEach((el,index) => {
+        sale['line_'+Number(index+1)+'_amount'] = el.amount
+        sale['line_'+Number(index+1)+'_sku'] = el.sku
+        sale['line_'+Number(index+1)+'_description'] = el.description
+        sale['line_'+Number(index+1)+'_price'] = el.price
+        sale['line_'+Number(index+1)+'_vat'] = el.vat
+      })
       props.dispatch(setCurrentSale(sale._id))
       setDets({...sale})
     }else{
       props.dispatch(setCurrentSale(null))
-      setDets({...DEFAULTS.detsDefault})
+      sale = {...DEFAULTS.detsDefault}
+      sale.invoiceLines.forEach((el,index) => {
+        sale['line_'+Number(index+1)+'_amount'] = el.amount
+        sale['line_'+Number(index+1)+'_sku'] = el.sku
+        sale['line_'+Number(index+1)+'_description'] = el.description
+        sale['line_'+Number(index+1)+'_price'] = el.price
+        sale['line_'+Number(index+1)+'_vat'] = el.vat
+      })
+
+      setDets({...sale})
     }
   }, [props.salesList,props.match.params.id])
 
@@ -94,18 +109,20 @@ function Sale(props) {
     return (
       <div className='line' key={index}>
         <img alt='remove line' src='/icons/minus.svg' style={{ height: '1.5rem' }} onClick={() => changeLine(index)}></img>
-        <input type='number' name='amount' value={el.amount} onChange={(e) => changeHandler(e, index)} />
-        <input type='text' name='sku' value={el.sku} onChange={(e) => changeHandler(e, index)} />
-        <input type='number' name='price' value={el.price} onChange={(e) => changeHandler(e, index)} />
-        <input type='text' name='description' value={el.description} onChange={(e) => changeHandler(e, index)} />
-        <div><input type='number' name='vat' value={el.vat} onChange={(e) => changeHandler(e, index)} />%</div>
+        <input type='number' name={'line_'+Number(index+1)+'_amount'} ref={register({ required: 'field required' })} />
+        <input type='text' name={'line_'+Number(index+1)+'_sku'} ref={register({ required: 'field required' })} />
+        <input type='number' name={'line_'+Number(index+1)+'_price'} ref={register({ required: 'field required' })} />
+        <input type='text' name={'line_'+Number(index+1)+'_description'} ref={register({ required: 'field required' })} />
+        <div><input type='number' name={'line_'+Number(index+1)+'_vat'}ref={register({ required: 'field required' })} />%</div>
         <div>{Number.isNaN(el.amount * el.price) ? '' : el.amount * el.price}</div>
       </div>
     )
   }) 
 
   const onSubmit = data => { 
-    props.dispatch(postInvoice(props.userid, data, props.currentSale, props.nextSale))
+    console.log(data);
+    
+    // props.dispatch(postInvoice(props.userid, data, props.currentSale, props.nextSale))
   };
 
   const errorText = Object.keys(errors).map(key => <p key={'err'+key}>{key}: {errors[key].message}</p>)
