@@ -14,10 +14,9 @@ function Sale(props) {
     defaultValues: {...dets},
   })
 
-
   useEffect(() => {
     const invoiceid = props.match.params.id
-    let sale = props.salesList.find(el => el.invoiceid == invoiceid)
+    let sale = props.salesList.find(el => el.invoiceid === Number(invoiceid))
     if(sale) {
       sale.invoiceLines.forEach((el,index) => {
         sale['line_'+Number(index+1)+'_amount'] = el.amount
@@ -121,8 +120,7 @@ function Sale(props) {
 
   const onSubmit = data => { 
     console.log(data);
-    
-    // props.dispatch(postInvoice(props.userid, data, props.currentSale, props.nextSale))
+    props.dispatch(postInvoice(props.userid, data, props.currentSale, props.nextSale))
   };
 
   const errorText = Object.keys(errors).map(key => <p key={'err'+key}>{key}: {errors[key].message}</p>)

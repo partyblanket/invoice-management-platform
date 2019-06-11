@@ -2,7 +2,27 @@ import axios from 'axios';
 import { saveAs } from 'file-saver';
 
 export async function postInvoice(userid, invoiceDets, invoiceid = null, nextSale, invoiceTotals) {
-    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets: {...invoiceDets, invoiceTotals} , invoiceid, nextSale,invoiceTotals})
+    const dataToSend = {
+        invoiceLines: []
+    }
+    for (const item in invoiceDets){
+        
+        if(item.includes('line_')){
+            const splitItem = item.split('_')
+            const line = Number(splitItem[1])-1
+            if(!dataToSend.invoiceLines[line]){
+                dataToSend.invoiceLines[line] = {}
+            }
+            dataToSend.invoiceLines[line][splitItem[2]] = invoiceDets[item]
+            
+        }else{
+            dataToSend[item] = invoiceDets[item]
+        }
+    
+    }
+    console.log(dataToSend);
+    
+    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets: {...dataToSend, invoiceTotals} , invoiceid, nextSale,invoiceTotals})
     console.log(data);
     if(!data._id) {return {
         type: 'ERROR',
