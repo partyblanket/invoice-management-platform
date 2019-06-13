@@ -52,7 +52,6 @@ routes.post('/api/login', passport.authenticate('local'), async (req,res) => {
 })
 
 routes.get('/isloggedin', async (req,res) => {
-  // const saleslist = await Sale.find({owner: req.session._id})
   if(req.session.passport){
     const {salesIdArray, username, company, nextSale, _id } = req.user._doc
     const saleslist = await Sale.find({owner: _id})
@@ -68,6 +67,7 @@ routes.get('/isloggedin', async (req,res) => {
 
 routes.post('/api/saveinvoice', async (req,res) => {
   const {invoiceid, invoiceDets, userid, nextSale} = req.body
+
   if(invoiceid){
     Sale.findByIdAndUpdate(invoiceid,invoiceDets,{new: true, useFindAndModify: false},(err, sale) => {
       if(err) return res.json({succes: false})

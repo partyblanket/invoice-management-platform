@@ -1,3 +1,11 @@
+export const invoiceDefault = {
+  amount: '1',
+  sku: '',
+  price: '',
+  description: '',
+  vat: '20'
+}
+
 export const detsDefault = {
   status: 'draft',
   billingCompany: '',
@@ -28,10 +36,3 @@ export const detsDefault = {
   invoiceid: 'NEW',
 }
 
-export const invoiceDefault = {
-  amount: '1',
-  sku: '',
-  price: '',
-  description: '',
-  vat: '20'
-}

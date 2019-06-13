@@ -111,7 +111,7 @@ header .edit {
   justify-items: end;
 }
 
-.client-and-settings-container div input {
+.client-and-settings-container div input, .client-and-settings-container div div {
   margin: 0.4rem;
 
 }

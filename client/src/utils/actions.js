@@ -1,9 +1,8 @@
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 
-export async function postInvoice(userid, invoiceDets, invoiceid = null, nextSale, invoiceTotals) {
-    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets: {...invoiceDets, invoiceTotals} , invoiceid, nextSale,invoiceTotals})
-    console.log(data);
+export async function postInvoice(userid, invoiceDets, invoiceid, nextSale, invoiceTotals) {
+    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets: {...arrayFromObjectStrings(invoiceDets), invoiceTotals} , invoiceid, nextSale})
     if(!data._id) {return {
         type: 'ERROR',
         error: 'failed saving sales details'
@@ -132,4 +131,21 @@ export function printInvoice(userid, invoiceDets, invoiceid = null) {
     return {
         type: 'PRINT_FINISHED'
     };
+}
+
+function arrayFromObjectStrings (items) {
+    const results = {invoiceLines: []}
+    for(const item in items) {
+      if(item.includes('line_')){
+        const splitItem = item.split('_')
+        const index = Number(splitItem[1])-1
+        if(!results.invoiceLines[index]){
+          results.invoiceLines[index] = {}
+        }
+        results.invoiceLines[index][splitItem[2]] = items[item]
+      }else{
+        results[item] = items[item]
+      }
+    }
+    return results
 }
