@@ -43,6 +43,11 @@ let User = new Schema({
   logo: {
     type: String,
   },
+  templateArray: {
+    type: [{filename: String, title:String, type:String}],
+    default: []
+  },
+
 });
 
 User.plugin(passportLocalMongoose);

@@ -118,20 +118,42 @@ export async function setCurrentSale(saleid) {
     };
 }
 
+export function submitTemplate (template) {
+    axios.post('/api/newtemplate',template)
+    return {
+        type: 'SUBMIT_TEMPLATE',
+    };
+}
+
 export function printInvoice(userid, invoiceDets, invoiceid = null) {
-    axios.post('/api/printinvoice',{userid, invoiceDets, invoiceid})
+    axios.post('/api/printinvoicedocx',{userid, invoiceDets, invoiceid})
         .then(resp => {
             return axios.get('/api/fetchinvoice/'+resp.data.file, {responseType: 'blob'})
         })
         .then((res) => {
-            const pdfBlob = new Blob([res.data], { type: 'application/pdf' });
-            saveAs(pdfBlob, 'generatedDocument.pdf')
+            const docxBlob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+            saveAs(docxBlob, 'generatedDocument.docx')
         })
     
     return {
         type: 'PRINT_FINISHED'
     };
 }
+
+// export function printInvoice(userid, invoiceDets, invoiceid = null) {
+//     axios.post('/api/printinvoice',{userid, invoiceDets, invoiceid})
+//         .then(resp => {
+//             return axios.get('/api/fetchinvoice/'+resp.data.file, {responseType: 'blob'})
+//         })
+//         .then((res) => {
+//             const pdfBlob = new Blob([res.data], { type: 'application/pdf' });
+//             saveAs(pdfBlob, 'generatedDocument.pdf')
+//         })
+    
+//     return {
+//         type: 'PRINT_FINISHED'
+//     };
+// }
 
 function arrayFromObjectStrings (items) {
     const results = {invoiceLines: []}
@@ -149,3 +171,4 @@ function arrayFromObjectStrings (items) {
     }
     return results
 }
+

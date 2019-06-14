@@ -10,6 +10,7 @@ import Settings from './settings';
 import List from './list'
 import Header from './header'
 import Sidebar from './sidebar'
+import Templates from './templates'
 
 function Main(props) {
  
@@ -27,7 +28,7 @@ function Main(props) {
         <PrivateRoute exact path='/sale/:id' component={Sale} />
         <PrivateRoute exact path='/list' component={List} />
         <PrivateRoute exact path='/settings' component={Settings} />
-        {/* <Route exact path='/template' component={Template} /> */}
+        <PrivateRoute exact path='/templates' component={Templates} />
         
 
       </>

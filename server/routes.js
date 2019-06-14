@@ -6,6 +6,9 @@ const User = require('./db/user.model');
 const Sale = require('./db/sale.model');
 
 const saveToPdf = require('./handlepdf')
+const saveToDocx = require('./handledocxpdf')
+const saveTemplate = require('./utils/saveTemplate')
+const uploadToAWS = require('./utils/uploadToAWS')
 
 const db = require('./db/mongoose')
 
@@ -113,9 +116,16 @@ routes.post('/api/printinvoice', async (req,res) => {
   res.json({file: pdf})
 })
 
+routes.post('/api/printinvoicedocx', async (req,res) => {
+  const {invoiceDets, userid, invoiceid} = req.body
+  const userDets = await User.findById(userid)
+  const filename = await saveToDocx(invoiceDets, userDets._doc)
+  res.json({file: filename})
+})
+
 routes.get('/api/fetchinvoice/:filename', (req,res) => {
   const filename = req.params.filename
-  const file = path.join(__dirname,'invoices',filename+'.pdf')
+  const file = path.join(__dirname,'invoices',filename)
   res.sendFile(file,{}, (err) => {
     if (err) {
       console.log(err);
@@ -125,6 +135,16 @@ routes.get('/api/fetchinvoice/:filename', (req,res) => {
       console.log('Sent:', filename);
     }
   })  
+})
+
+routes.post('/api/newtemplate', saveTemplate.single('file'), uploadToAWS, async (req,res) => {
+  console.log(req.body);
+  
+  User.findByIdAndUpdate(req.body.userid,{$push: {templateArray: {filename: req.file.filename, title: req.body.title, templateType: 'invoice'}}},{new: true, useFindAndModify: false},(err, user) => {
+    if(err) console.log('Error incrementing pushing template',err)
+    
+  })
+
 })
 
 module.exports = routes;
