@@ -1,12 +1,15 @@
 export default function(state = {}, action) {
   
-  if (action.type === 'POST_SALEDETS' || action.type === 'GET_SALEDETS') {
+  if (action.type === 'POST_SALEDETS' || action.type === 'GET_SALEDETS' || action.type === 'SALE_CREATED') {
     const arrayIndexToReplace = state.salesList.findIndex(el => el._id === action.insertedId)
     const newSalesList = [...state.salesList]
-    newSalesList[arrayIndexToReplace] = action.data
+    console.log(arrayIndexToReplace);
+    
+    arrayIndexToReplace === -1 ? newSalesList.push(action.data) : newSalesList[arrayIndexToReplace] = action.data
     state = {
       ...state,
-      salesList: newSalesList
+      salesList: newSalesList,
+      currentSale: action.insertedId,
     }
   }
   
@@ -16,10 +19,9 @@ export default function(state = {}, action) {
       userid: action.userid,
       username: action.username,
       company: action.company,
-      currentSale: null,
-      nextSale: action.nextSale,
       error: action.error,
       salesList: action.salesList || [],
+      templateArray: action.templateArray,
     }; 
   }
 
@@ -65,6 +67,13 @@ export default function(state = {}, action) {
     state = {
       ...state,
       saleslist: action.sales
+    }; 
+  }
+
+  if (action.type === 'SUBMIT_TEMPLATE') {
+    state = {
+      ...state,
+      templateArray: action.templateArray
     }; 
   }
 

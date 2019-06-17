@@ -1,9 +1,9 @@
 export const invoiceDefault = {
-  amount: '1',
+  amount: 1,
   sku: '',
-  price: '',
+  price: 0,
   description: '',
-  vat: '20'
+  vat: 20
 }
 
 export const detsDefault = {

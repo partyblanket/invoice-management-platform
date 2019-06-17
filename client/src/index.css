@@ -292,6 +292,50 @@ input[type="number"] {
   .button > img {
     height: 1.8rem;
   }
+  
+  ul {
+    list-style: none;
+    display: flex;
+  }
+
+  ul * {
+    padding: 1rem;
+  }
+
+  ul > li {
+    position: relative;
+    background: darkgray;
+    width: 5rem;
+  }
+
+
+
+  ul > li > ul {
+    position: absolute;
+    display: none;
+    left: -1rem;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.5s ease;
+  }
+
+  ul li:hover > ul,
+  ul li ul:hover {
+    visibility: visible;
+    opacity: 1;
+    display: block;
+  }
+
+  ul > li > ul > li{
+    width: 10rem;
+    padding: 0.5rem;
+    font-size: 1.5rem;
+  }
+
+  li:hover{
+    background: wheat;
+    cursor: pointer;
+  }
 
   #settings {
     display: grid;
@@ -388,3 +432,4 @@ input[type="number"] {
   font-family: serif;
   padding: 1rem;
 }
+

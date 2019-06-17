@@ -1,0 +1,26 @@
+.templatesOuter {
+  display: flex;
+}
+
+.templateElement {
+  width: 10rem;
+  height: 15rem;
+  background: white;
+  margin: 1rem;
+  text-align: center;
+}
+
+.templateElement button{
+  margin-top: 5rem;
+}
+
+.newTemplate {
+  /* width: 70%;
+  height: 70%; */
+  background: lightsalmon;
+  position: absolute;
+  top: 0;
+  margin-left: 15%;
+  margin-top: 10%;
+  padding: 5rem;
+}

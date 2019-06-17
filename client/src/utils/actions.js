@@ -1,12 +1,22 @@
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 
-export async function postInvoice(userid, invoiceDets, invoiceid, nextSale, invoiceTotals) {
-    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets: {...arrayFromObjectStrings(invoiceDets), invoiceTotals} , invoiceid, nextSale})
+export async function postSale(userid, invoiceDets, invoiceid, invoiceTotals) {
+    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets: {...arrayFromObjectStrings(invoiceDets), invoiceTotals} , invoiceid})
+    console.log(data);
+    
     if(!data._id) {return {
         type: 'ERROR',
         error: 'failed saving sales details'
     }}
+
+    if(!invoiceid) {
+        return {
+            type: 'SALE_CREATED',
+            data,
+            insertedId: data._id,
+        };
+    }
     
     return {
         type: 'POST_SALEDETS',
@@ -18,6 +28,7 @@ export async function postInvoice(userid, invoiceDets, invoiceid, nextSale, invo
 export async function getInvoice(userid, invoiceid) {
     const { data } = await axios.post('/api/getinvoice',{userid, invoiceid})
     const {_id, ...rest} = data
+    
     return {
         type: 'GET_SALEDETS',
         insertedId: _id,
@@ -27,22 +38,20 @@ export async function getInvoice(userid, invoiceid) {
 
 export async function register(username, password, company) {
     const { data } = await axios.post('/api/register',{ username, password, company})    
-    console.log(data);
     
     return {
         type: 'REGISTER',
         userid: data._id,
         username: data.username,
         error: null,
-        nextSale: data.nextSale,
         company: data.company,
-        salesIdArray: data.salesIdArray,
+        templateArray: data.templateArray,
     };
 }
 
 export async function login(username, password) {
     const {data} = await axios.post('/api/login',{username, password})
-    // console.log(data);
+    console.log(data);
     
     return {
         type: 'LOGIN',
@@ -50,8 +59,8 @@ export async function login(username, password) {
         username: data.username,
         company: data.company,
         error: null,
-        nextSale: data.nextSale,
         salesList: data.saleslist || [],
+        templateArray: data.templateArray || [],
     };
 }
 
@@ -64,9 +73,8 @@ export async function isLoggedIn() {
                 username: data.username,
                 company: data.company,
                 error: null,
-                nextSale: data.nextSale,
-                salesIdArray: data.salesIdArray || [],
                 salesList: data.saleslist || [],
+                templateArray: data.templateArray,
             };
 
 
@@ -118,20 +126,45 @@ export async function setCurrentSale(saleid) {
     };
 }
 
-export function printInvoice(userid, invoiceDets, invoiceid = null) {
-    axios.post('/api/printinvoice',{userid, invoiceDets, invoiceid})
+export async function submitTemplate (template) {
+    const {data} = await axios.post('/api/newtemplate',template)
+    console.log(data);
+    
+    return {
+        type: 'SUBMIT_TEMPLATE',
+        templateArray: data.templateArray
+    };
+}
+
+export function printInvoice(e, userid, invoiceDets, invoiceid = null) {
+    axios.post('/api/printinvoicedocx',{userid, invoiceDets, invoiceid, templateid: e.target.id})
         .then(resp => {
             return axios.get('/api/fetchinvoice/'+resp.data.file, {responseType: 'blob'})
         })
         .then((res) => {
-            const pdfBlob = new Blob([res.data], { type: 'application/pdf' });
-            saveAs(pdfBlob, 'generatedDocument.pdf')
+            const docxBlob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+            saveAs(docxBlob, 'generatedDocument.docx')
         })
     
     return {
         type: 'PRINT_FINISHED'
     };
 }
+
+// export function printInvoice(userid, invoiceDets, invoiceid = null) {
+//     axios.post('/api/printinvoice',{userid, invoiceDets, invoiceid})
+//         .then(resp => {
+//             return axios.get('/api/fetchinvoice/'+resp.data.file, {responseType: 'blob'})
+//         })
+//         .then((res) => {
+//             const pdfBlob = new Blob([res.data], { type: 'application/pdf' });
+//             saveAs(pdfBlob, 'generatedDocument.pdf')
+//         })
+    
+//     return {
+//         type: 'PRINT_FINISHED'
+//     };
+// }
 
 function arrayFromObjectStrings (items) {
     const results = {invoiceLines: []}
@@ -149,3 +182,4 @@ function arrayFromObjectStrings (items) {
     }
     return results
 }
+

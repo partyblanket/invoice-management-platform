@@ -3,6 +3,7 @@ import useForm from 'react-hook-form'
 
 import { connect } from 'react-redux';
 import { saveSettings } from '../utils/actions';
+import Templates from './templates'
 
 //https://react-hook-form.now.sh/api
 function SettingsForm({props}) {
@@ -71,9 +72,13 @@ function Settings(props) {
           <div className='button' onClick={() => setView('general')}>General</div>
           <div className='button' onClick={() => setView('templates')}>Templates</div>
         </div>
+        {view === 'templates' ? 
+          <Templates /> :
           <SettingsForm props={props}/>
+          }
+          
       </div>
-      {view === 'templates' && templates}
+      
     </>
   )
 }

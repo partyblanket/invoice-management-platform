@@ -6,6 +6,9 @@ const User = require('./db/user.model');
 const Sale = require('./db/sale.model');
 
 const saveToPdf = require('./handlepdf')
+const saveToDocx = require('./handledocxpdf')
+const saveTemplate = require('./utils/saveTemplate')
+const uploadToAWS = require('./utils/uploadToAWS')
 
 const db = require('./db/mongoose')
 
@@ -42,22 +45,22 @@ routes.post('/api/updatesettings', async (req,res) => {
 
 
 routes.post('/api/login', passport.authenticate('local'), async (req,res) => {
-  const {salesIdArray, username, company, nextSale, _id } = req.user._doc
+  const {templateArray, username, company, nextSale, _id } = req.user._doc
   const saleslist = await Sale.find({owner: _id})
   req.session.userid = _id
   res.json({
     passport: req.session.passport, 
-    salesIdArray, username, company, nextSale, _id, saleslist
+    username, company, nextSale, _id, saleslist, templateArray
   })
 })
 
 routes.get('/isloggedin', async (req,res) => {
   if(req.session.passport){
-    const {salesIdArray, username, company, nextSale, _id } = req.user._doc
+    const {templateArray, username, company, nextSale, _id } = req.user._doc
     const saleslist = await Sale.find({owner: _id})
     res.json({
       passport: req.session.passport, // iis passport needed here?
-      salesIdArray, username, company, nextSale, _id, saleslist
+      templateArray, username, company, nextSale, _id, saleslist
     })
   }
   else {
@@ -77,19 +80,20 @@ routes.post('/api/saveinvoice', async (req,res) => {
 
   if(!invoiceid){
     console.log('no invoiceid');
+    const user = await User.findByIdAndUpdate(userid,{$inc: {currentSale: 1}},{new: true, useFindAndModify: false})
     new Sale({
       ...invoiceDets,
       owner: userid,
-      invoiceid: nextSale
+      invoiceid: user.currentSale
     })
     .save((err, sale) => {
-      if(err) return res.json({succes: false})
-      res.json({sale})
-      User.findByIdAndUpdate(userid,{$inc: {nextSale: 1}, $push: {salesIdArray: {_id: sale._id, saleid: nextSale}}},{new: true, useFindAndModify: false},(err, user) => {
-        if(err) console.log('Error incrementing saleid/pushing salesidArray',err)
-        
-      })
+      if(err) return res.json({succes: false, error: err})
+      res.json(sale)
     })
+    
+    
+    
+    
   }
 })
 
@@ -113,9 +117,16 @@ routes.post('/api/printinvoice', async (req,res) => {
   res.json({file: pdf})
 })
 
+routes.post('/api/printinvoicedocx', async (req,res) => {
+  const {invoiceDets, userid, invoiceid, templateid} = req.body
+  const userDets = await User.findById(userid)
+  const filename = await saveToDocx(invoiceDets, userDets._doc,templateid)
+  res.json({file: filename})
+})
+
 routes.get('/api/fetchinvoice/:filename', (req,res) => {
   const filename = req.params.filename
-  const file = path.join(__dirname,'invoices',filename+'.pdf')
+  const file = path.join(__dirname,'invoices',filename)
   res.sendFile(file,{}, (err) => {
     if (err) {
       console.log(err);
@@ -125,6 +136,17 @@ routes.get('/api/fetchinvoice/:filename', (req,res) => {
       console.log('Sent:', filename);
     }
   })  
+})
+
+routes.post('/api/newtemplate', saveTemplate.single('file'), uploadToAWS, (req,res) => {
+  console.log(req.body);
+  
+  User.findByIdAndUpdate(req.body.userid,{$push: {templateArray: {filename: req.file.filename, title: req.body.title, templateType: req.body.templateType}}},{new: true, useFindAndModify: false},(err, user) => {
+    if(err) return res.json({error: err})
+    res.json(user)
+  })
+  
+
 })
 
 module.exports = routes;
