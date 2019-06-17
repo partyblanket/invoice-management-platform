@@ -45,22 +45,22 @@ routes.post('/api/updatesettings', async (req,res) => {
 
 
 routes.post('/api/login', passport.authenticate('local'), async (req,res) => {
-  const {salesIdArray, username, company, nextSale, _id } = req.user._doc
+  const {templateArray, username, company, nextSale, _id } = req.user._doc
   const saleslist = await Sale.find({owner: _id})
   req.session.userid = _id
   res.json({
     passport: req.session.passport, 
-    salesIdArray, username, company, nextSale, _id, saleslist
+    username, company, nextSale, _id, saleslist, templateArray
   })
 })
 
 routes.get('/isloggedin', async (req,res) => {
   if(req.session.passport){
-    const {salesIdArray, username, company, nextSale, _id } = req.user._doc
+    const {templateArray, username, company, nextSale, _id } = req.user._doc
     const saleslist = await Sale.find({owner: _id})
     res.json({
       passport: req.session.passport, // iis passport needed here?
-      salesIdArray, username, company, nextSale, _id, saleslist
+      templateArray, username, company, nextSale, _id, saleslist
     })
   }
   else {
@@ -118,9 +118,9 @@ routes.post('/api/printinvoice', async (req,res) => {
 })
 
 routes.post('/api/printinvoicedocx', async (req,res) => {
-  const {invoiceDets, userid, invoiceid} = req.body
+  const {invoiceDets, userid, invoiceid, templateid} = req.body
   const userDets = await User.findById(userid)
-  const filename = await saveToDocx(invoiceDets, userDets._doc)
+  const filename = await saveToDocx(invoiceDets, userDets._doc,templateid)
   res.json({file: filename})
 })
 
@@ -138,13 +138,14 @@ routes.get('/api/fetchinvoice/:filename', (req,res) => {
   })  
 })
 
-routes.post('/api/newtemplate', saveTemplate.single('file'), uploadToAWS, async (req,res) => {
+routes.post('/api/newtemplate', saveTemplate.single('file'), uploadToAWS, (req,res) => {
   console.log(req.body);
   
-  User.findByIdAndUpdate(req.body.userid,{$push: {templateArray: {filename: req.file.filename, title: req.body.title, templateType: 'invoice'}}},{new: true, useFindAndModify: false},(err, user) => {
-    if(err) console.log('Error incrementing pushing template',err)
-    
+  User.findByIdAndUpdate(req.body.userid,{$push: {templateArray: {filename: req.file.filename, title: req.body.title, templateType: req.body.templateType}}},{new: true, useFindAndModify: false},(err, user) => {
+    if(err) return res.json({error: err})
+    res.json(user)
   })
+  
 
 })
 

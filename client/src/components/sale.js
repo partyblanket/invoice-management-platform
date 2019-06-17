@@ -5,6 +5,7 @@ import * as DEFAULTS from '../utils/defaults'
 import useForm from 'react-hook-form'
 import { Redirect } from "react-router-dom";
 
+import Dropdown from './dropdown'
 
 
 function Sale(props) {
@@ -113,12 +114,15 @@ function Sale(props) {
       <div className='head'>
         
         <p>Invoice # {dets.invoiceid}</p>
-        <div>
-          <input type='submit' value='SAVE' form='saleForm' id='save' className='button' />
-          <div className='print button' onClick={(e) => props.dispatch(printInvoice(props.userid, dets, props.currentSale))}>Print</div>
-          <div className='template button' onClick={(e) => props.dispatch(printInvoice(props.userid, dets, props.currentSale))}><img alt='template' src='/icons/email.svg' />
-          </div>
-        </div>
+        <ul>
+          <li type='submit' value='SAVE' form='saleForm' id='save' className=''>Save</li>
+          <li className='' onClick={(e) => props.dispatch(printInvoice(e, props.userid, dets, props.currentSale))}>Print
+            <Dropdown items={props.templateArray}/>
+          </li>
+          <li className='' onClick={(e) => props.dispatch(printInvoice(props.userid, dets, props.currentSale))}>E-mail</li>
+          {/* <img alt='template' src='/icons/email.svg' /> */}
+          
+        </ul>
       </div>
       <form id='saleForm' onSubmit={handleSubmit(onSubmit)}>
       <div className='client-and-settings-container'>
@@ -196,6 +200,7 @@ function mapStateToProps(state) {
     status: state.status,
     salesList: state.salesList || [],
     error: state.error,
+    templateArray: state.templateArray || [],
   };
 };
 

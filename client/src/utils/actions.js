@@ -28,7 +28,6 @@ export async function postSale(userid, invoiceDets, invoiceid, invoiceTotals) {
 export async function getInvoice(userid, invoiceid) {
     const { data } = await axios.post('/api/getinvoice',{userid, invoiceid})
     const {_id, ...rest} = data
-    console.log(data);
     
     return {
         type: 'GET_SALEDETS',
@@ -39,7 +38,6 @@ export async function getInvoice(userid, invoiceid) {
 
 export async function register(username, password, company) {
     const { data } = await axios.post('/api/register',{ username, password, company})    
-    console.log(data);
     
     return {
         type: 'REGISTER',
@@ -47,12 +45,13 @@ export async function register(username, password, company) {
         username: data.username,
         error: null,
         company: data.company,
+        templateArray: data.templateArray,
     };
 }
 
 export async function login(username, password) {
     const {data} = await axios.post('/api/login',{username, password})
-    // console.log(data);
+    console.log(data);
     
     return {
         type: 'LOGIN',
@@ -61,6 +60,7 @@ export async function login(username, password) {
         company: data.company,
         error: null,
         salesList: data.saleslist || [],
+        templateArray: data.templateArray || [],
     };
 }
 
@@ -74,6 +74,7 @@ export async function isLoggedIn() {
                 company: data.company,
                 error: null,
                 salesList: data.saleslist || [],
+                templateArray: data.templateArray,
             };
 
 
@@ -125,15 +126,18 @@ export async function setCurrentSale(saleid) {
     };
 }
 
-export function submitTemplate (template) {
-    axios.post('/api/newtemplate',template)
+export async function submitTemplate (template) {
+    const {data} = await axios.post('/api/newtemplate',template)
+    console.log(data);
+    
     return {
         type: 'SUBMIT_TEMPLATE',
+        templateArray: data.templateArray
     };
 }
 
-export function printInvoice(userid, invoiceDets, invoiceid = null) {
-    axios.post('/api/printinvoicedocx',{userid, invoiceDets, invoiceid})
+export function printInvoice(e, userid, invoiceDets, invoiceid = null) {
+    axios.post('/api/printinvoicedocx',{userid, invoiceDets, invoiceid, templateid: e.target.id})
         .then(resp => {
             return axios.get('/api/fetchinvoice/'+resp.data.file, {responseType: 'blob'})
         })

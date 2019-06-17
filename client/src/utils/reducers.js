@@ -21,6 +21,7 @@ export default function(state = {}, action) {
       company: action.company,
       error: action.error,
       salesList: action.salesList || [],
+      templateArray: action.templateArray,
     }; 
   }
 
@@ -66,6 +67,13 @@ export default function(state = {}, action) {
     state = {
       ...state,
       saleslist: action.sales
+    }; 
+  }
+
+  if (action.type === 'SUBMIT_TEMPLATE') {
+    state = {
+      ...state,
+      templateArray: action.templateArray
     }; 
   }
 

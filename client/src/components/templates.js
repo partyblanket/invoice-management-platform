@@ -11,17 +11,18 @@ const formToSubmit = new FormData();
 
 function Templates(props) {
   const [newVisible, setNewVisible] = useState(false)
-  const [form, setForm] = useState({file:'',title:''})
-  const templateElements = props.templates.map(el => (
-    <div className='templateElement'></div>
+  const [form, setForm] = useState({file:'',title:'', templateType:'invoice'})
+  const templateElements = props.templateArray.map(el => (
+    <div key={el._id} className='templateElement'>{el.title}</div>
   ))
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(form);
     formToSubmit.set('userid', props.userid)
     formToSubmit.set('title', form.title)
+    formToSubmit.set('templateType', form.templateType)
     props.dispatch(submitTemplate(formToSubmit))
+    setNewVisible(false)
 
   }
 
@@ -34,30 +35,34 @@ function Templates(props) {
     setForm({...form, [e.target.name]:e.target.value})
   }
   
+  const newTemplateElement = (
+    <div className='newTemplate'>
+    <form onSubmit={handleSubmit}>
+      <div><p>.docx file</p><input onChange={handleChange} value={form.file} type='file' name='file' /></div>
+      <div><p>title</p><input onChange={handleChange} value={form.title} type='text' name='title'/></div>
+      <div><p>type</p><select onChange={handleChange} value={form.title} type='text' name='templateType'><option name='invoice'>Invoice</option></select></div>
+      <div><input type='submit'value='Submit'/></div>
+    </form>
+  </div>
+  )
 
   return (
       <>
         <div className='templatesOuter'>
           <div className='templateElement'>
-            <button>NEW</button>
+            <button onClick={() => setNewVisible(true)}>NEW</button>
           </div>
           {templateElements}
-
+          {newVisible && newTemplateElement}
         </div> 
-        <div className='newTemplate'>
-          <form onSubmit={handleSubmit}>
-            <input onChange={handleChange} value={form.file} type='file' name='file'/>
-            <input onChange={handleChange} value={form.title} type='text' name='title'/>
-            <input type='submit'value='Submit'/>
-          </form>
-        </div>
+
       </>
   )
 }
 
 function mapStateToProps(state) {
   return {
-    templates: state.templates || [],
+    templateArray: state.templateArray || [],
     userid: state.userid
   };
 };

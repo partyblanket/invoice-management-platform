@@ -6,9 +6,11 @@ var path = require('path');
 
 
 
-function createDocx (invoiceDets, userDets, templateFile = 'invoice-template.docx') {
-  const content = fs
-    .readFileSync(path.resolve(__dirname, templateFile), 'binary');
+async function createDocx (invoiceDets, userDets, templateid) {
+  const {filename} = userDets.templateArray.find(el => el._id == templateid)
+  console.log(filename);
+  
+  const content = fs.readFileSync(path.resolve(__dirname, 'docxtemplates',filename), 'binary');
 
   const zip = new JSZip(content);
 
@@ -18,7 +20,6 @@ function createDocx (invoiceDets, userDets, templateFile = 'invoice-template.doc
   doc.setData({...invoiceDets, ...userDets});
 
   try {
-      // render the document ie replace the variables
       doc.render()
   }
   catch (error) {
