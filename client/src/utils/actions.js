@@ -1,12 +1,22 @@
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 
-export async function postInvoice(userid, invoiceDets, invoiceid, nextSale, invoiceTotals) {
-    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets: {...arrayFromObjectStrings(invoiceDets), invoiceTotals} , invoiceid, nextSale})
+export async function postSale(userid, invoiceDets, invoiceid, invoiceTotals) {
+    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets: {...arrayFromObjectStrings(invoiceDets), invoiceTotals} , invoiceid})
+    console.log(data);
+    
     if(!data._id) {return {
         type: 'ERROR',
         error: 'failed saving sales details'
     }}
+
+    if(!invoiceid) {
+        return {
+            type: 'SALE_CREATED',
+            data,
+            insertedId: data._id,
+        };
+    }
     
     return {
         type: 'POST_SALEDETS',
@@ -18,6 +28,8 @@ export async function postInvoice(userid, invoiceDets, invoiceid, nextSale, invo
 export async function getInvoice(userid, invoiceid) {
     const { data } = await axios.post('/api/getinvoice',{userid, invoiceid})
     const {_id, ...rest} = data
+    console.log(data);
+    
     return {
         type: 'GET_SALEDETS',
         insertedId: _id,
@@ -34,9 +46,7 @@ export async function register(username, password, company) {
         userid: data._id,
         username: data.username,
         error: null,
-        nextSale: data.nextSale,
         company: data.company,
-        salesIdArray: data.salesIdArray,
     };
 }
 
@@ -50,7 +60,6 @@ export async function login(username, password) {
         username: data.username,
         company: data.company,
         error: null,
-        nextSale: data.nextSale,
         salesList: data.saleslist || [],
     };
 }
@@ -64,8 +73,6 @@ export async function isLoggedIn() {
                 username: data.username,
                 company: data.company,
                 error: null,
-                nextSale: data.nextSale,
-                salesIdArray: data.salesIdArray || [],
                 salesList: data.saleslist || [],
             };
 

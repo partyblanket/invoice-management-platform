@@ -80,19 +80,20 @@ routes.post('/api/saveinvoice', async (req,res) => {
 
   if(!invoiceid){
     console.log('no invoiceid');
+    const user = await User.findByIdAndUpdate(userid,{$inc: {currentSale: 1}},{new: true, useFindAndModify: false})
     new Sale({
       ...invoiceDets,
       owner: userid,
-      invoiceid: nextSale
+      invoiceid: user.currentSale
     })
     .save((err, sale) => {
-      if(err) return res.json({succes: false})
-      res.json({sale})
-      User.findByIdAndUpdate(userid,{$inc: {nextSale: 1}, $push: {salesIdArray: {_id: sale._id, saleid: nextSale}}},{new: true, useFindAndModify: false},(err, user) => {
-        if(err) console.log('Error incrementing saleid/pushing salesidArray',err)
-        
-      })
+      if(err) return res.json({succes: false, error: err})
+      res.json(sale)
     })
+    
+    
+    
+    
   }
 })
 

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux';
-import { postInvoice, printInvoice, setCurrentSale } from '../utils/actions';
+import { postSale, printInvoice, setCurrentSale } from '../utils/actions';
 import * as DEFAULTS from '../utils/defaults'
 import useForm from 'react-hook-form'
+import { Redirect } from "react-router-dom";
+
 
 
 function Sale(props) {
@@ -14,17 +16,23 @@ function Sale(props) {
     mode: 'onBlur',
   })
 
+  // useEffect(() => {
+  //   if(!currentSale) return
+  //   setDets()
+  // },[props.currentSale])
+
   useEffect(() => {
     if(!dets) return
     setTotals(calcTotals(dets.invoiceLines,dets.incVat))
   },[dets])
 
+
+
   useEffect(() => {
     const invoiceid = props.match.params.id
     let sale = props.salesList.find(el => el.invoiceid === Number(invoiceid))
     if(!sale){
-      props.dispatch(setCurrentSale(null))
-      setDets({...DEFAULTS.detsDefault})
+      setDets({invoiceid: null})
     }else{
       setDets({...sale})
       props.dispatch(setCurrentSale(sale._id))
@@ -33,6 +41,7 @@ function Sale(props) {
   }, [props.salesList,props.match.params.id]) 
 
   if(!dets) return 'loading'
+  if(dets.invoiceid === null) return <Redirect to='/list' />
 
   const changeHandler = (e) => {
     if (['billingName', 'billingPhone', 'billingAddressLineOne', 'billingAddressLineTwo', 'billingPostcode', 'billingCity', 'shippingName', 'shippingPhone', 'shippingAddressLineOne', 'shippingAddressLineTwo', 'shippingPostcode', 'shippingCity', 'shippingDate'].includes(e.target.name)) {
@@ -92,7 +101,7 @@ function Sale(props) {
 
   const onSubmit = data => { 
     console.log('onSubmit ',data);
-    props.dispatch(postInvoice(props.userid, data, props.currentSale, props.nextSale, totals))
+    props.dispatch(postSale(props.userid, data, props.currentSale, totals))
   };
 
   const errorText = Object.keys(errors).map(key => <p key={'err'+key}>{key}: {errors[key].message}</p>)
@@ -184,7 +193,6 @@ function mapStateToProps(state) {
     currentSale: state.currentSale || null,
     sales: state.sales || {},
     userid: state.userid,
-    nextSale: state.nextSale,
     status: state.status,
     salesList: state.salesList || [],
     error: state.error,
@@ -193,7 +201,7 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps)(Sale);
 
-function calcTotals (invoiceLines, incVat) {
+function calcTotals (invoiceLines = [], incVat) {
   const results = {
       inc: 0,
       ex: 0,

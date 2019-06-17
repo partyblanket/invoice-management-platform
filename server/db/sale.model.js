@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
 let Sale = new Schema({
   status: String,
   owner: Schema.Types.ObjectId,
-  invoiceid: {type: Number, required: true, unique: true},
+  invoiceid: {type: Number, required: true, unique: false},
   billingCompany: String,
   billingName: String,
   billingPhone: String,

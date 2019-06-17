@@ -1,10 +1,18 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { connect } from 'react-redux';
-import { Link } from "react-router-dom";
+import { Link} from "react-router-dom";
 
 import './list.css'
 
 function List(props) {
+
+  useEffect(() => {
+      const sale = props.salesList.find(el => el._id == props.currentSale)
+      if(sale){
+        props.history.push('/sale/'+sale.invoiceid)
+      }    
+  }, [props.currentSale])
+  
   const items = props.salesList.map(el => {
     return (
     <Link to={'/sale/'+el.invoiceid} className='list-item' key={el._id}>
@@ -12,7 +20,7 @@ function List(props) {
         <p>{el.invoiceDate}</p>
         <p>{el.dueDate}</p>
         <p>{el.billingCompany}</p>
-        <p>{el.invoiceTotals.ex}</p>
+        <p>empty</p>
         <p>{el.status || 'draft'}</p>
     </Link>
     )
@@ -36,6 +44,7 @@ function List(props) {
 function mapStateToProps(state) {
   return {
     salesList: state.salesList || [],
+    currentSale: state.currentSale,
   };
 };
 

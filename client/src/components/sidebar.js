@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { setCurrentSale } from '../utils/actions';
+import { postSale } from '../utils/actions';
 import { Link } from "react-router-dom";
+import * as DEFAULTS from '../utils/defaults'
 
 
 function Sidebar(props) { 
@@ -10,7 +11,7 @@ function Sidebar(props) {
     <div id='sidebar'>
       <div className={props.showSidebar ? 'menu visible' : 'menu'}>
         <b className='title'>invoices</b>
-        <b className='new' onClick={() => props.dispatch(setCurrentSale(null))}>NEW</b>
+        <b className='new' onClick={() => props.dispatch(postSale(props.userid, DEFAULTS.detsDefault))}>NEW</b>
         {salesListItems}
       </div>
       <div className='cover'></div>
@@ -22,6 +23,9 @@ function mapStateToProps(state) {
   return {
     showSidebar: state.showSidebar,
     salesList: state.salesList || [],
+    userid: state.userid,
+
+
   };
 };
 

@@ -36,7 +36,7 @@ let User = new Schema({
   phone: {
     type: String,
   },
-  nextSale: {
+  currentSale: {
     type: Number,
     default: 1000,
   },
@@ -44,8 +44,7 @@ let User = new Schema({
     type: String,
   },
   templateArray: {
-    type: [{filename: String, title:String, type:String}],
-    default: []
+    type: [{filename: String, title:String, templateType:String}]
   },
 
 });
