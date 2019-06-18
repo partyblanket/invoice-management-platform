@@ -20,7 +20,7 @@ function List(props) {
         <p>{el.invoiceDate}</p>
         <p>{el.dueDate}</p>
         <p>{el.billingCompany}</p>
-        <p>empty</p>
+        <p>{el.totalIncVat}</p>
         <p>{el.status || 'draft'}</p>
     </Link>
     )

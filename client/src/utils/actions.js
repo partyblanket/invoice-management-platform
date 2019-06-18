@@ -2,7 +2,7 @@ import axios from 'axios';
 import { saveAs } from 'file-saver';
 
 export async function postSale(userid, invoiceDets, invoiceid, invoiceTotals) {
-    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets: {...arrayFromObjectStrings(invoiceDets), invoiceTotals} , invoiceid})
+    const { data } = await axios.post('/api/saveinvoice',{userid, invoiceDets: {...arrayFromObjectStrings(invoiceDets), ...invoiceTotals} , invoiceid})
     console.log(data);
     
     if(!data._id) {return {
@@ -136,8 +136,8 @@ export async function submitTemplate (template) {
     };
 }
 
-export function printInvoice(e, userid, invoiceDets, invoiceid = null) {
-    axios.post('/api/printinvoicedocx',{userid, invoiceDets, invoiceid, templateid: e.target.id})
+export function printInvoice(e, userid, invoiceDets, invoiceid = null, totals) {
+    axios.post('/api/printinvoicedocx',{userid, invoiceDets:{...invoiceDets, ...totals}, invoiceid, templateid: e.target.id})
         .then(resp => {
             return axios.get('/api/fetchinvoice/'+resp.data.file, {responseType: 'blob'})
         })
