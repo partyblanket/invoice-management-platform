@@ -1,8 +1,13 @@
-# Invoice Maker 
+# Invoice Management Platform 
 
-An app to send and keep track of invoices.
 
-This app was build in a little over one week as final project at SPICED Full Stack Bootcamp. It's not ready for release yet.
+
+## Demo
+![demo](https://raw.githubusercontent.com/partyblanket/invoice-management-platform/master/example.gif)
+
+## Features
+* Manage sales invoices
+* Print out customazible documents
 
 ## Technologies
 
@@ -13,13 +18,13 @@ This app was build in a little over one week as final project at SPICED Full Sta
 ### Server
 * Express
 * MongoDB
-* Puppeteer
+* AWS S3
+* Docxtemplater
 
 ## To-do
 
-* Clean & refactor code
+* Currencies should be formatted as such (Accounting.js?)
 * Testing
-* Secuirity
-* Mongoose
-* Email
-* Invoice templates
+* Secuirity 
+* Email invoices as pdf directly from platform
+* Backup all printed & emailed documents on AWS
