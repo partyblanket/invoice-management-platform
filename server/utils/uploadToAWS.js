@@ -33,7 +33,6 @@ function uploadToAWS(req, res, next) {
         
         if (s3Response.statusCode == 200) {
             next();
-            fs.unlink(req.file.path, () => {});
         } else {           
             res.sendStatus(500);
         }

@@ -11,11 +11,12 @@ async function createDocx (invoiceDets, userDets, templateid) {
   console.log(filename);
   
   const content = fs.readFileSync(path.resolve(__dirname, 'docxtemplates',filename), 'binary');
-
+  //if no content -> check S3
   const zip = new JSZip(content);
 
   const doc = new Docxtemplater();[]
   doc.loadZip(zip);
+  console.log('setData ',{...invoiceDets, ...userDets});
 
   doc.setData({...invoiceDets, ...userDets});
 

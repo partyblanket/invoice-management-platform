@@ -33,16 +33,15 @@ let Sale = new Schema({
     sku: String,
     price: Number,
     description: String,
-    vat: Number
+    vat: Number,
+    total: Number
   }],
   privateNote: String,
   terms: String,
   incVat: Boolean,
-  invoiceTotals: {
-    vat: Number,
-    ex: Number,
-    inc: Number
-  }
+  totalVat: Number,
+  totalExVat: Number,
+  totalIncVat: Number,
 });
 
 module.exports = mongoose.model('sale', Sale);

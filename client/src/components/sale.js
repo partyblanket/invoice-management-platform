@@ -11,7 +11,7 @@ import Dropdown from './dropdown'
 function Sale(props) {
   const [dets, setDets] = useState(null)
   const [shippingRadio, setShippingRadio] = useState(false)
-  const [totals, setTotals] = useState({inc:0,ex:0,vat:0})
+  const [totals, setTotals] = useState({totalIncVat:0,totalExVat:0,totalVat:0})
 
   const { register, handleSubmit, errors } = useForm({
     mode: 'onBlur',
@@ -92,10 +92,10 @@ function Sale(props) {
         <img alt='remove line' src='/icons/minus.svg' style={{ height: '1.5rem' }} onClick={() => changeLine(index)}></img>
         <input onChange={changeHandler} type='number' value={el.amount} name={'line_'+Number(index+1)+'_amount'} ref={register({ required: 'field required' })} />
         <input onChange={changeHandler} type='text'  value={el.sku} name={'line_'+Number(index+1)+'_sku'} ref={register({ required: 'field required' })}/>
-        <input onChange={changeHandler} type='number'  value={el.price}name={'line_'+Number(index+1)+'_price'} ref={register({ required: 'field required' })} />
+        <input onChange={changeHandler} type='number'  value={el.price} name={'line_'+Number(index+1)+'_price'} ref={register({ required: 'field required' })} />
         <input onChange={changeHandler} type='text'  value={el.description} name={'line_'+Number(index+1)+'_description'} ref={register({ required: 'field required' })} />
         <div><input onChange={changeHandler} type='number' value={el.vat} name={'line_'+Number(index+1)+'_vat'}ref={register({ required: 'field required' })}/>%</div>
-        <div>{Number(el.amount * el.price).toFixed(2)}</div>
+        <input readOnly type='number' value={Number(el.amount * el.price).toFixed(2)} name={'line_'+Number(index+1)+'total'} ref={register}/>
       </div>
     )
   }) 
@@ -115,13 +115,11 @@ function Sale(props) {
         
         <p>Invoice # {dets.invoiceid}</p>
         <ul>
-          <li type='submit' value='SAVE' form='saleForm' id='save' className=''>Save</li>
-          <li className='' onClick={(e) => props.dispatch(printInvoice(e, props.userid, dets, props.currentSale))}>Print
+          <li onClick={() => document.getElementById("saleSave").click()}>Save</li>
+          <li className='' onClick={(e) => props.dispatch(printInvoice(e, props.userid, dets, props.currentSale, totals))}>Print
             <Dropdown items={props.templateArray}/>
           </li>
-          <li className='' onClick={(e) => props.dispatch(printInvoice(props.userid, dets, props.currentSale))}>E-mail</li>
-          {/* <img alt='template' src='/icons/email.svg' /> */}
-          
+          <li className='' onClick={(e) => props.dispatch(printInvoice(props.userid, dets, props.currentSale))}>E-mail</li>          
         </ul>
       </div>
       <form id='saleForm' onSubmit={handleSubmit(onSubmit)}>
@@ -176,9 +174,9 @@ function Sale(props) {
             <textarea name='terms' rows="5" cols="35" value={dets.terms} onChange={changeHandler} ref={register} />
           </div>
           <div className='total'>
-            <p className='exvat'>Total ex. VAT:</p><p className='exvatamnt'>{dets.currency} {totals.ex}</p>
-            <p className='vat'>Total VAT:</p><p className='vatamnt'>{dets.currency} {totals.vat}</p>
-            <p className='incvat'>Total inv. VAT:</p><p className='incvatamnt'>{dets.currency} {totals.inc}</p>
+            <p className='exvat'>Total totalExVat. VAT:</p><p className='exvatamnt'>{dets.currency} {totals.totalExVat.toFixed(2)}</p>
+            <p className='totalVat'>Total VAT:</p><p className='vatamnt'>{dets.currency} {totals.totalVat.toFixed(2)}</p>
+            <p className='incvat'>Total inv. VAT:</p><p className='incvatamnt'>{dets.currency} {totals.totalIncVat.toFixed(2)}</p>
           </div>
         </div>
         <div className='note'>
@@ -186,6 +184,7 @@ function Sale(props) {
           <textarea name='privateNote' value={dets.privateNote} rows="5" cols="80" onChange={changeHandler} ref={register}/>
         </div>
       </div>
+      <button id='saleSave' type='submit' style={{display: 'none'}} />
       </form>
     </div>
   )
@@ -208,19 +207,19 @@ export default connect(mapStateToProps)(Sale);
 
 function calcTotals (invoiceLines = [], incVat) {
   const results = {
-      inc: 0,
-      ex: 0,
-      vat: 0
+      totalIncVat: 0,
+      totalExVat: 0,
+      totalVat: 0
     }
     invoiceLines.forEach(el => {
       if (incVat) {
-        results.inc += el.amount * el.price
-        results.ex += el.amount * el.price / ((el.vat / 100) + 1)
-        results.vat += (el.amount * el.price / ((el.vat / 100) + 1)) * (el.vat / 100)
+        results.totalIncVat += el.amount * el.price
+        results.totalExVat += el.amount * el.price / ((el.vat / 100) + 1)
+        results.totalVat += (el.amount * el.price / ((el.vat / 100) + 1)) * (el.vat / 100)
       } else {
-        results.inc += el.amount * el.price * ((el.vat / 100) + 1);
-        results.ex += el.amount * el.price;
-        results.vat += el.amount * el.price * (el.vat / 100);
+        results.totalIncVat += el.amount * el.price * ((el.vat / 100) + 1);
+        results.totalExVat += el.amount * el.price;
+        results.totalVat += el.amount * el.price * (el.vat / 100);
       }
     })
   
@@ -234,7 +233,7 @@ function calcTotals (invoiceLines = [], incVat) {
 //     results['line_'+Number(index+1)+'_sku'] = line.sku
 //     results['line_'+Number(index+1)+'_description'] = line.description
 //     results['line_'+Number(index+1)+'_price'] = line.price
-//     results['line_'+Number(index+1)+'_vat'] = line.vat
+//     results['line_'+Number(index+1)+'_vat'] = line.totalVat
 //   })
 //   return results
 // }
