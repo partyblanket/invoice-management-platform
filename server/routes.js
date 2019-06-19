@@ -54,7 +54,7 @@ routes.post('/api/login', passport.authenticate('local'), async (req,res) => {
   })
 })
 
-routes.get('/isloggedin', async (req,res) => {
+routes.get('/api/isloggedin', async (req,res) => {
   if(req.session.passport){
     const {templateArray, username, company, nextSale, _id } = req.user._doc
     const saleslist = await Sale.find({owner: _id})
@@ -90,18 +90,7 @@ routes.post('/api/saveinvoice', async (req,res) => {
       if(err) return res.json({succes: false, error: err})
       res.json(sale)
     })
-    
-    
-    
-    
   }
-})
-
-routes.get('/api/saleslist', async (req,res) => {
-  console.log(req.session.userid);
-  
-  res.json(sales)
-  
 })
 
 routes.post('/api/getinvoice', async (req,res) => {
@@ -145,8 +134,6 @@ routes.post('/api/newtemplate', saveTemplate.single('file'), uploadToAWS, (req,r
     if(err) return res.json({error: err})
     res.json(user)
   })
-  
-
 })
 
 module.exports = routes;

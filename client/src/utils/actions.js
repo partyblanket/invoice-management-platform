@@ -65,34 +65,17 @@ export async function login(username, password) {
 }
 
 export async function isLoggedIn() {
-    const {data} = await axios.get(`/isloggedin`)
-           
-            return {
-                type: 'LOGIN',
-                userid: data._id,
-                username: data.username,
-                company: data.company,
-                error: null,
-                salesList: data.saleslist || [],
-                templateArray: data.templateArray,
-            };
-
-
-}
-
-export async function getSalesList() {
-    return axios
-        .get(`/api/saleslist`)
-        .then(({ data }) => {
-            return {
-                type: 'GET_SALES_LIST',
-                sales: {...data}
-            }
-            
-        })
-        .catch(err => console.log(err));
-
-}
+    const {data} = await axios.get(`/api/isloggedin`)
+        return {
+            type: 'LOGIN',
+            userid: data._id,
+            username: data.username,
+            company: data.company,
+            error: null,
+            salesList: data.saleslist || [],
+            templateArray: data.templateArray,
+        };
+    }
 
 export function toggleSettings() {
     return {
@@ -150,21 +133,6 @@ export function printInvoice(e, userid, invoiceDets, invoiceid = null, totals) {
         type: 'PRINT_FINISHED'
     };
 }
-
-// export function printInvoice(userid, invoiceDets, invoiceid = null) {
-//     axios.post('/api/printinvoice',{userid, invoiceDets, invoiceid})
-//         .then(resp => {
-//             return axios.get('/api/fetchinvoice/'+resp.data.file, {responseType: 'blob'})
-//         })
-//         .then((res) => {
-//             const pdfBlob = new Blob([res.data], { type: 'application/pdf' });
-//             saveAs(pdfBlob, 'generatedDocument.pdf')
-//         })
-    
-//     return {
-//         type: 'PRINT_FINISHED'
-//     };
-// }
 
 function arrayFromObjectStrings (items) {
     const results = {invoiceLines: []}
