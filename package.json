@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_ENV=test mocha server/test",
     "start": "BROWSER=none concurrently \"npm run server\" \"npm run client\"",
     "server": "nodemon server/index.js",
     "client": "cd client && nodemon start"
@@ -42,6 +42,10 @@
     "validator": "^11.0.0"
   },
   "devDependencies": {
-    "concurrently": "^4.1.0"
+    "chai": "^4.2.0",
+    "concurrently": "^4.1.0",
+    "mocha": "^6.1.4",
+    "mockgoose": "^8.0.2",
+    "supertest": "^4.0.2"
   }
 }

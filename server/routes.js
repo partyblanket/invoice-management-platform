@@ -10,11 +10,7 @@ const saveToDocx = require('./handledocxpdf')
 const saveTemplate = require('./utils/saveTemplate')
 const uploadToAWS = require('./utils/uploadToAWS')
 
-const db = require('./db/mongoose')
 
-db.once('open', function() {
-  console.log("MongoDB database connection established successfully");
-})
 
 routes.post('/api/register', async (req,res) => {
   const { username, password, company } = req.body
