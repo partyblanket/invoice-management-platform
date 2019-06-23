@@ -39,9 +39,13 @@ app.use((req, res, next) => {
   next();
 });
 
-db.connect()
+if(process.env.NODE_ENV !== 'test'){
+  db.connect()
   .then(() => {
     server.listen(PORT, () => console.log(`API server listening on ${PORT}`))
   })
+}
+
+
 
 module.exports = {app}

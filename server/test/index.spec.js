@@ -1,5 +1,3 @@
-process.env.NODE_ENV = 'test'
-
 const {expect} = require('chai')
 const request = require('supertest')
 
@@ -21,19 +19,22 @@ const db = require('../db')
 describe('API intregration tests', () => {
   describe('#GET /api/isloggedin', () => {
 
-    // before((done) => {
-    //   db.connect()
-    //     .then(() => done())
-    //     .catch((err) => done(err));
-    // })
+    before((done) => {
+      db.connect()
+        .then(() => done())
+        .catch((err) => done(err));
+    })
   
-    // after((done) => {
-    //   db.close()
-    //     .then(() => done())
-    //     .catch((err) => done(err));
-    // })
+    after((done) => {      
+      db.disconnect()
+        .then(() => {
+        
+          done()
+        })
+        .catch((err) => done(err));
+    })
 
-    it('should success false object when no passport', (done) => {
+    it('should return success false object when no passport', (done) => {
       
       request(app)
         .get('/api/isloggedin')
@@ -41,6 +42,19 @@ describe('API intregration tests', () => {
           req = null
           expect(res.statusCode).to.equal(200);
           expect(res.body).to.have.property('success').to.be.false
+          done()
+        })
+        .catch(err => done(err))
+    })
+// https://scotch.io/tutorials/how-to-test-nodejs-apps-using-mocha-chai-and-sinonjs
+    it('should success return user object when passport on session', (done) => {
+      
+      request(app)
+        .get('/api/isloggedin')
+        .then((res) => {
+          req = {session: {passport: {}}}
+          expect(res.statusCode).to.equal(200);
+          expect(res.body).to.not.have.property('success')
           done()
         })
         .catch(err => done(err))

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha server/test",
+    "test": "NODE_ENV=test mocha --exit server/test",
     "start": "BROWSER=none concurrently \"npm run server\" \"npm run client\"",
     "server": "nodemon server/index.js",
     "client": "cd client && nodemon start"

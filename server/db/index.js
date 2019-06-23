@@ -37,9 +37,12 @@ function connect(){
   })
 }
 
-function close() {
+function disconnect() {
   return mongoose.disconnect();
 }
 
+function readyState () {
+  return mongoose.connection.readyState
+}
 
-module.exports = {connect, close};
+module.exports = {connect, disconnect, readyState};
