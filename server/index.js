@@ -2,14 +2,12 @@ const express = require('express');
 const compression = require('compression');
 const bodyParser = require('body-parser');
 const passport = require('passport');
-const LocalStrategy = require('passport-local')
-const db = require('./db')
-
+const LocalStrategy = require('passport-local');
+const db = require('./db');
 
 const app = express();
 const server = require('http').Server(app);
-const User = require('./db/user.model')
-
+const User = require('./db/user.model');
 
 const PORT = process.env.PORT || 3002;
 
@@ -34,18 +32,16 @@ passport.deserializeUser(User.deserializeUser());
 
 
 app.use((req, res, next) => {
-  //instruct web browsers to block attempts to load the site in a frame.
-  res.setHeader('x-frame-options', 'DENY');
-  next();
+    //instruct web browsers to block attempts to load the site in a frame.
+    res.setHeader('x-frame-options', 'DENY');
+    next();
 });
 
 if(process.env.NODE_ENV !== 'test'){
-  db.connect()
-  .then(() => {
-    server.listen(PORT, () => console.log(`API server listening on ${PORT}`))
-  })
+    db.connect()
+        .then(() => {
+            server.listen(PORT, () => console.log(`API server listening on ${PORT}`));
+        });
 }
 
-
-
-module.exports = {app}
+module.exports = {app};

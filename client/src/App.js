@@ -20,6 +20,6 @@ function App () {
       <Main />
     </Provider>
   )
-}
+};
 
 export default App
