@@ -23,7 +23,7 @@
     "express": "^4.16.4",
     "express-session": "^1.16.1",
     "from": "^0.1.7",
-    "html-pdf": "^2.2.0",
+    "html-pdf": "^3.0.1",
     "immutability-helper": "^3.0.0",
     "import": "0.0.6",
     "jszip": "^2.6.1",
